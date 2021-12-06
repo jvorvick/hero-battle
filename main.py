@@ -28,6 +28,7 @@ class Entity:
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
         super().__init__(self, name, 'barbarian', strength, dexterity, health)
+        self.inventory = ['potion', 'potion', 'amulet', 'battleaxe']
 
 class Zombie(Entity): # A Monster is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
