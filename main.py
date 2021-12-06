@@ -41,7 +41,8 @@ class Game:
         ]
 
     def attack(self, attacker, defender):
-        chance = attacker.dexterity - defender.dexterity + 50
+        base_percent = 50
+        chance = base_percent + attacker.dexterity - defender.dexterity
         roll = randint(1, 100)
         if roll < chance:
             damage = randint(1, attacker.strength)
