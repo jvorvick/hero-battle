@@ -17,6 +17,7 @@ class Entity:
         self.strength = strength
         self.dexterity = dexterity
         self.health = health
+        self.inventory = []
     
     def alive(self):
         return self.health > 0
