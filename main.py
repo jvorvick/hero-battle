@@ -48,6 +48,9 @@ class Potion(Item):
         super().__init__('potion')
         self.color = color
     
+    def __repr__(self):
+        return 'Potion()'
+
     def __str__(self):
         return f'{self.color} {self.name}'
 
@@ -59,7 +62,7 @@ class Amulet(Item):
         return 'Amulet()'
     
     def __str__(self):
-        return f'{self.name}'
+        return self.name
 
 class Game:
     def __init__(self):
@@ -68,7 +71,7 @@ class Game:
             Zombie('Zed')
         ]
         print(self.player_list[0].inventory)
-        print(f'{self.player_list[0].inventory[2]}')
+        print(self.player_list[0].inventory[2])
 
     def attack(self, attacker, defender):
         base_percent = 50
@@ -85,21 +88,21 @@ class Game:
         a = self.player_list[0]
         b = self.player_list[1]
 
-        while a.alive() and b.alive():
-            self.attack(a, b)
-            self.attack(b, a)
-            print(a.name, a.health)
-            print(b.name, b.health)
+        # while a.alive() and b.alive():
+        #     self.attack(a, b)
+        #     self.attack(b, a)
+        #     print(a.name, a.health)
+        #     print(b.name, b.health)
 
-        if a.dead() and b.dead():
-            print(f'It\'s a massacre! {a.name} and {b.name} are both dead!')
-        elif a.dead():
-            print(f'Our hero {a.name} has been slain! Game over.')
-        else:
-            print(f'Huzzah! {a.name} has slain {b.name}!')
+        # if a.dead() and b.dead():
+        #     print(f'It\'s a massacre! {a.name} and {b.name} are both dead!')
+        # elif a.dead():
+        #     print(f'Our hero {a.name} has been slain! Game over.')
+        # else:
+        #     print(f'Huzzah! {a.name} has slain {b.name}!')
 
-        print(a.name, a.health)
-        print(b.name, b.health)
+        # print(a.name, a.health)
+        # print(b.name, b.health)
 
 game = Game()
 game.fight()
