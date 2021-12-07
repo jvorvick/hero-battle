@@ -11,13 +11,13 @@ future: weapons, armor, treasure, inventory, accuracy, experience, stat increase
 from random import randint
 
 class Entity:
-    def __init__(self, name, character_class, strength=18, dexterity=18, health=100):
+    def __init__(self, name, character_class, strength=18, dexterity=18, health=100, inventory=None):
         self.name = name
         self.character_class = character_class
         self.strength = strength
         self.dexterity = dexterity
         self.health = health
-        self.inventory = []
+        self.inventory = [] if inventory is None else inventory # ternery operator: mandatory in Python to prevent shared inventory
     
     def alive(self):
         return self.health > 0
@@ -27,12 +27,39 @@ class Entity:
 
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(self, name, 'barbarian', strength, dexterity, health)
-        self.inventory = ['potion', 'potion', 'amulet', 'battleaxe']
+        super().__init__(name, 'barbarian', strength, dexterity, health, [Potion(), Potion(), Amulet(), Item('battleaxe')])
 
 class Zombie(Entity): # A Monster is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(self, name, 'zombie', strength, dexterity, health)
+        super().__init__(name, 'zombie', strength, dexterity, health)
+
+class Item:
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f'Item("{self.name}")'
+    
+    def __str__(self):
+        return self.name
+
+class Potion(Item):
+    def __init__(self, color='red'):
+        super().__init__('potion')
+        self.color = color
+    
+    def __str__(self):
+        return f'{self.color} {self.name}'
+
+class Amulet(Item):
+    def __init__(self):
+        super().__init__('amulet')
+
+    def __repr__(self):
+        return 'Amulet()'
+    
+    def __str__(self):
+        return f'{self.name}'
 
 class Game:
     def __init__(self):
@@ -40,6 +67,8 @@ class Game:
             Barbarian('Conan'),
             Zombie('Zed')
         ]
+        print(self.player_list[0].inventory)
+        print(f'{self.player_list[0].inventory[2]}')
 
     def attack(self, attacker, defender):
         base_percent = 50
