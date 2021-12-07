@@ -27,7 +27,7 @@ class Entity:
 
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(name, 'barbarian', strength, dexterity, health, [Potion(), Potion(), Amulet(), Item('battleaxe')])
+        super().__init__(name, 'barbarian', strength, dexterity, health, [Potion(), Potion(), Amulet(), Battleaxe()])
 
 class Zombie(Entity): # A Monster is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
@@ -61,6 +61,16 @@ class Amulet(Item):
     def __repr__(self):
         return 'Amulet()'
     
+    def __str__(self):
+        return self.name
+
+class Battleaxe(Item):
+    def __init__(self):
+        super().__init__('battleaxe')
+
+    def __repr__(self):
+        return 'Battleaxe()'
+
     def __str__(self):
         return self.name
 
