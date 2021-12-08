@@ -27,67 +27,99 @@ class Entity:
 
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(name, 'barbarian', strength, dexterity, health, [HealthPotion(), Potion('potion2'), Amulet(), Battleaxe()])
+        super().__init__(name, 'barbarian', strength, dexterity, health, [HealthPotion(), ManaPotion(), AmuletOfStrength(), Battleaxe()])
 
 class Zombie(Entity): # A Monster is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
         super().__init__(name, 'zombie', strength, dexterity, health)
 
 class Item:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, item_type):
+        self.item_type = item_type
 
     def __repr__(self):
-        return f'Item("{self.name}")'
+        return f'Item("{self.item_type}")'
     
     def __str__(self):
-        return self.name
+        return self.item_type
 
 class Potion(Item):
-    def __init__(self, name):
-        super().__init__(name)
-        # self.color = color
+    def __init__(self):
+        super().__init__('potion')
     
     def __repr__(self):
         return 'Potion()'
 
     def __str__(self):
-        # return f'{self.color} {self.name}'
-        return self.name
+        return self.item_type
 
 class HealthPotion(Potion):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self):
+        super().__init__()
         self.color = 'red'
-        self.attribute = 'restore +10'
+        self.attribute = 'restore +10 health'
     
     def __repr__(self):
         return 'HealthPotion()'
 
     def __str__(self):
-        return f'{self.color} {self.name}, {self.attribute}'
+        return f'{self.color} {self.item_type}, {self.attribute}'
 
-# class ManaPotion(Potion):
-
-class Amulet(Item):
+class ManaPotion(Potion):
     def __init__(self):
-        super().__init__('amulet')
+        super().__init__()
+        self.color = 'blue'
+        self.attribute = 'restore +10 mana'
 
     def __repr__(self):
-        return 'Amulet()'
+        return 'ManaPotion()'
+
+    def __str__(self):
+        return f'{self.color} {self.item_type}, {self.attribute}'
+
+class Accessory(Item):
+    def __init__(self):
+        super().__init__('Accessory')
+
+    def __repr__(self):
+        return 'Accessory()'
     
     def __str__(self):
-        return self.name
+        return self.item_type
 
-class Battleaxe(Item):
+class AmuletOfStrength(Accessory):
     def __init__(self):
-        super().__init__('battleaxe')
+        super().__init__()
+        self.name = 'Amulet of Strength'
+        self.attribute = 'strength +5'
+
+    def __repr__(self):
+        return 'AmuletOfStrength()'
+
+    def __str__(self):
+        return f'{self.item_type}: {self.name}, {self.attribute}'
+
+class Weapon(Item):
+    def __init__(self):
+        super().__init__('Weapon')
+        
+    def __repr__(self):
+        return 'Weapon()'
+
+    def __str__(self):
+        return self.item_type
+
+class Battleaxe(Weapon):
+    def __init__(self):
+        super().__init__()
+        self.name = 'Battleaxe'
+        self.attribute = 'attack +5'
 
     def __repr__(self):
         return 'Battleaxe()'
 
     def __str__(self):
-        return self.name
+        return f'{self.item_type}: {self.name}, {self.attribute}'
 
 class Game:
     def __init__(self):
@@ -97,6 +129,9 @@ class Game:
         ]
         print(self.player_list[0].inventory)
         print(self.player_list[0].inventory[0])
+        print(self.player_list[0].inventory[1])
+        print(self.player_list[0].inventory[2])
+        print(self.player_list[0].inventory[3])
 
     def attack(self, attacker, defender):
         base_percent = 50
