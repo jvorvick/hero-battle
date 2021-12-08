@@ -11,13 +11,14 @@ future: weapons, armor, treasure, inventory, accuracy, experience, stat increase
 from random import randint
 
 class Entity:
-    def __init__(self, name, character_class, strength=18, dexterity=18, health=100, inventory=None):
+    def __init__(self, name, character_class, strength=18, dexterity=18, health=100, inventory=None, equip=None):
         self.name = name
         self.character_class = character_class
         self.strength = strength
         self.dexterity = dexterity
         self.health = health
         self.inventory = [] if inventory is None else inventory # ternery operator: mandatory in Python to prevent shared inventory
+        self.equip = [] if equip is None else equip
     
     def alive(self):
         return self.health > 0
@@ -27,11 +28,18 @@ class Entity:
 
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(name, 'barbarian', strength, dexterity, health, [HealthPotion(), ManaPotion(), AmuletOfStrength(), Battleaxe()])
+        super().__init__(
+            name, 'barbarian', strength, dexterity, health, #stats
+            [HealthPotion(), ManaPotion()], #inv
+            [AmuletOfStrength(), Battleaxe()] #equip
+        )
 
 class Zombie(Entity): # A Monster is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(name, 'zombie', strength, dexterity, health)
+        super().__init__(name, 'zombie', strength, dexterity, health,
+            [],
+            []
+        )
 
 class Item:
     def __init__(self, item_type):
@@ -130,8 +138,9 @@ class Game:
         print(self.player_list[0].inventory)
         print(self.player_list[0].inventory[0])
         print(self.player_list[0].inventory[1])
-        print(self.player_list[0].inventory[2])
-        print(self.player_list[0].inventory[3])
+        print(self.player_list[0].equip)
+        print(self.player_list[0].equip[0])
+        print(self.player_list[0].equip[1])
 
     def attack(self, attacker, defender):
         base_percent = 50
