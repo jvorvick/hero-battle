@@ -16,7 +16,7 @@ class Entity:
         self.character_class = character_class
         self.strength = strength
         self.dexterity = dexterity
-        self.health = health
+        self.health = health 
         self.inventory = [] if inventory is None else inventory # ternery operator: mandatory in Python to prevent shared inventory
         self.equip = [] if equip is None else equip
     
@@ -45,12 +45,8 @@ class Item:
     def __init__(self, item_type):
         self.item_type = item_type
 
-    def modifer_to_str(self):
-        modifiers = str(self.modifier)
-        modifiers = modifiers.replace('{', '')
-        modifiers = modifiers.replace('}', '')
-        modifiers = modifiers.replace("'", "")
-        return modifiers
+    def modifer_to_str(self, mods):
+        return ', '.join([f'{k} {v}' for k, v in mods.items()])
 
     def __repr__(self):
         return f'Item("{self.item_type}")'
@@ -115,8 +111,7 @@ class AmuletOfStrength(Accessory):
         return 'AmuletOfStrength()'
 
     def __str__(self):
-        
-        return f'{self.item_type}: {self.name}, {modifiers}'
+        return f'{self.item_type}: {self.name}, {self.modifer_to_str(self.modifier)}'
 
 class Weapon(Item):
     def __init__(self):
