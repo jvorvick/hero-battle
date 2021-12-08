@@ -27,7 +27,7 @@ class Entity:
 
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(name, 'barbarian', strength, dexterity, health, [Potion(), Potion(), Amulet(), Battleaxe()])
+        super().__init__(name, 'barbarian', strength, dexterity, health, [HealthPotion(), Potion('potion2'), Amulet(), Battleaxe()])
 
 class Zombie(Entity): # A Monster is a kind of Entity
     def __init__(self, name, strength=18, dexterity=18, health=100):
@@ -44,15 +44,30 @@ class Item:
         return self.name
 
 class Potion(Item):
-    def __init__(self, color='red'):
-        super().__init__('potion')
-        self.color = color
+    def __init__(self, name):
+        super().__init__(name)
+        # self.color = color
     
     def __repr__(self):
         return 'Potion()'
 
     def __str__(self):
-        return f'{self.color} {self.name}'
+        # return f'{self.color} {self.name}'
+        return self.name
+
+class HealthPotion(Potion):
+    def __init__(self, name):
+        super().__init__(name)
+        self.color = 'red'
+        self.attribute = 'restore +10'
+    
+    def __repr__(self):
+        return 'HealthPotion()'
+
+    def __str__(self):
+        return f'{self.color} {self.name}, {self.attribute}'
+
+# class ManaPotion(Potion):
 
 class Amulet(Item):
     def __init__(self):
@@ -81,7 +96,7 @@ class Game:
             Zombie('Zed')
         ]
         print(self.player_list[0].inventory)
-        print(self.player_list[0].inventory[2])
+        print(self.player_list[0].inventory[0])
 
     def attack(self, attacker, defender):
         base_percent = 50
