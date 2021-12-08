@@ -45,6 +45,13 @@ class Item:
     def __init__(self, item_type):
         self.item_type = item_type
 
+    def modifer_to_str(self):
+        modifiers = str(self.modifier)
+        modifiers = modifiers.replace('{', '')
+        modifiers = modifiers.replace('}', '')
+        modifiers = modifiers.replace("'", "")
+        return modifiers
+
     def __repr__(self):
         return f'Item("{self.item_type}")'
     
@@ -99,13 +106,17 @@ class AmuletOfStrength(Accessory):
     def __init__(self):
         super().__init__()
         self.name = 'Amulet of Strength'
-        self.attribute = 'strength +5'
+        self.modifier = {
+            'strength': 5,
+            'health': -2
+        }
 
     def __repr__(self):
         return 'AmuletOfStrength()'
 
     def __str__(self):
-        return f'{self.item_type}: {self.name}, {self.attribute}'
+        
+        return f'{self.item_type}: {self.name}, {modifiers}'
 
 class Weapon(Item):
     def __init__(self):
@@ -121,13 +132,13 @@ class Battleaxe(Weapon):
     def __init__(self):
         super().__init__()
         self.name = 'Battleaxe'
-        self.attribute = 'attack +5'
+        self.modifier = {'strength': 5}
 
     def __repr__(self):
         return 'Battleaxe()'
 
     def __str__(self):
-        return f'{self.item_type}: {self.name}, {self.attribute}'
+        return f'{self.item_type}: {self.name}, +{self.modifier["strength"]} damage'
 
 class Game:
     def __init__(self):
