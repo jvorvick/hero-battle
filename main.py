@@ -198,11 +198,24 @@ def map():
         ['x', 'x', 'x'],
         ['x', 'x', 'x']
     ]
-
+    print(layout)
     for r in layout:
         print(' '.join(r))
+
+def map2():
+    x = 5
+    y = 5
+    layout = [[]] * x
+    print(layout)
+    for r in layout:
+        # print(r)
+        # print(' '.join(r))
+        # for i in range(y):
+        r.append('x')
+    print(layout)
 
 
 game = Game()
 game.fight()
 map()
+map2()
