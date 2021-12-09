@@ -205,13 +205,15 @@ def map():
 def map2():
     x = 5
     y = 5
-    layout = [[]] * x
+    layout = []
     print(layout)
-    for r in layout:
+    for i in range(x):
+        layout.append(['x'] * y)
+    # for r in layout:
         # print(r)
         # print(' '.join(r))
         # for i in range(y):
-        r.append('x')
+    #     r.append('x')
     print(layout)
 
 
