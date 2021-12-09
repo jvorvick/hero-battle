@@ -135,18 +135,31 @@ class Battleaxe(Weapon):
     def __str__(self):
         return f'{self.item_type}: {self.name}, +{self.modifier["strength"]} damage'
 
+class Map():
+    pass
+            
+
+    # def __repr__(self):
+    #     for x in self.layout:
+    #         str(x)
+
+    # def __str__(self):
+        
+        
+        
+
 class Game:
     def __init__(self):
         self.player_list = [
             Barbarian('Conan'),
             Zombie('Zed')
         ]
-        print(self.player_list[0].inventory)
-        print(self.player_list[0].inventory[0])
-        print(self.player_list[0].inventory[1])
-        print(self.player_list[0].equip)
-        print(self.player_list[0].equip[0])
-        print(self.player_list[0].equip[1])
+        # print(self.player_list[0].inventory)
+        # print(self.player_list[0].inventory[0])
+        # print(self.player_list[0].inventory[1])
+        # print(self.player_list[0].equip)
+        # print(self.player_list[0].equip[0])
+        # print(self.player_list[0].equip[1])
 
     def attack(self, attacker, defender):
         base_percent = 50
@@ -179,5 +192,17 @@ class Game:
         # print(a.name, a.health)
         # print(b.name, b.health)
 
+def map():
+    layout = [
+        ['x', 'x', 'x'],
+        ['x', 'x', 'x'],
+        ['x', 'x', 'x']
+    ]
+
+    for r in layout:
+        print(' '.join(r))
+
+
 game = Game()
 game.fight()
+map()
