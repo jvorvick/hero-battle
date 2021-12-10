@@ -226,7 +226,7 @@ def map(width, height):
     return output
 
 def draw_map(data):
-    text = ''
+    text = '\n'
     for r in data:
         for c in r:
             text += c + ' '
@@ -236,4 +236,5 @@ def draw_map(data):
 game = Game()
 game.fight()
 map_data = map(16, 9)
+map_data[5][5] = '@'
 print(draw_map(map_data))
