@@ -192,27 +192,45 @@ class Game:
         # print(a.name, a.health)
         # print(b.name, b.health)
 
-def map():
-    layout = [
-        ['x', 'x', 'x'],
-        ['x', 'x', 'x'],
-        ['x', 'x', 'x']
-    ]
-    print(layout)
-    for r in layout:
-        print(' '.join(r))
+# def map():
+#     layout = [
+#         ['x', 'x', 'x'],
+#         ['x', 'x', 'x'],
+#         ['x', 'x', 'x']
+#     ]
+#     print(layout)
+#     for r in layout:
+#         print(' '.join(r))
 
-def map2():
-    x = 5
-    y = 6
-    layout = []
-    print(layout)
-    for i in range(x):
-        layout.append(['x'] * y)
-    for r in layout:
-        print(' '.join(r))
+# def map2():
+#     x = 5
+#     y = 6
+#     layout = []
+#     print(layout)
+#     for i in range(x):
+#         layout.append(['x'] * y)
+#     for r in layout:
+#         print(' '.join(r))
+#     print(layout)
 
+def map(width, height):
+    board = []
+    for y in range(height):
+        row = []
+        for x in range(width):
+            row.append('.')
+        board.append(row)
+    return board
+
+def draw_map(board):
+    text = ''
+    for r in board:
+        for c in r:
+            text += c + ' '
+        text += '\n'
+    return text
+    
 game = Game()
 game.fight()
-map()
-map2()
+board = map(16, 9)
+print(draw_map(board))
