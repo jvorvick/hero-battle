@@ -204,18 +204,13 @@ def map():
 
 def map2():
     x = 5
-    y = 5
+    y = 6
     layout = []
     print(layout)
     for i in range(x):
         layout.append(['x'] * y)
-    # for r in layout:
-        # print(r)
-        # print(' '.join(r))
-        # for i in range(y):
-    #     r.append('x')
-    print(layout)
-
+    for r in layout:
+        print(' '.join(r))
 
 game = Game()
 game.fight()
