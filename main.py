@@ -8,7 +8,7 @@ Verbs: fight, attack
 future: weapons, armor, treasure, inventory, accuracy, experience, stat increase
 '''
 
-from random import randint
+from random import randint, choice
 
 class Entity:
     def __init__(self, name, character_class, strength=18, dexterity=18, health=100, inventory=None, equip=None):
@@ -232,9 +232,20 @@ def draw_map(data):
             text += c + ' '
         text += '\n'
     return text
-    
+
+def place_monster(data, monster):
+    coord = []
+    for r in range(len(data)):
+        for c in range(len(data[r])):
+            if data[r][c] == '.':
+                coord.append((c, r))
+    random_coord = choice(coord)
+    x, y = random_coord
+    data[y][x] = monster
+
 game = Game()
 game.fight()
 map_data = map(16, 9)
-map_data[5][5] = '@'
+map_data[5][5] = '@' # place hero
+place_monster(map_data, 'Z')
 print(draw_map(map_data))
