@@ -218,7 +218,10 @@ def map(width, height):
     for y in range(height):
         row = []
         for x in range(width):
-            row.append('.')
+            if x == width - 1 or x == 0 or y == 0 or y == height - 1:
+                row.append('#')
+            else:
+                row.append('.')
         output.append(row)
     return output
 
