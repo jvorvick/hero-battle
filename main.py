@@ -214,17 +214,17 @@ class Game:
 #     print(layout)
 
 def map(width, height):
-    board = []
+    output = []
     for y in range(height):
         row = []
         for x in range(width):
             row.append('.')
-        board.append(row)
-    return board
+        output.append(row)
+    return output
 
-def draw_map(board):
+def draw_map(data):
     text = ''
-    for r in board:
+    for r in data:
         for c in r:
             text += c + ' '
         text += '\n'
@@ -232,5 +232,5 @@ def draw_map(board):
     
 game = Game()
 game.fight()
-board = map(16, 9)
-print(draw_map(board))
+map_data = map(16, 9)
+print(draw_map(map_data))
