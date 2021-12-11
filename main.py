@@ -244,7 +244,19 @@ def place_monster(data, monster):
     data[y][x] = monster
 
 # function to take a direction command to move character (arrow keys, wasd, nsew)
-
+def movement_command(command):
+    command = command.upper()
+    if command == 'UP' or command == 'W' or command == 'NORTH':
+        return 'up'
+    elif command == 'DOWN' or command == 'S' or command == 'SOUTH':
+        return 'down'
+    elif command == 'LEFT' or command == 'W' or command == 'WEST':
+        return 'west'
+    elif command == 'RIGHT' or command == 'E' or command == 'EAST':
+        return 'east'
+    else:
+        return 'invalid command'
+    
 # function to check for walls or monsters (collision)
 
 # function to move character
@@ -257,3 +269,4 @@ map_data = map(16, 9)
 map_data[5][5] = '@' # place hero
 place_monster(map_data, 'Z')
 print(draw_map(map_data))
+print(movement_command(input('command: ')))
