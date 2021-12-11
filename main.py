@@ -259,9 +259,26 @@ def movement_command(command):
         return 'invalid command'
     
 # function to check for walls or monsters (collision)
-# def collision_check(command):
-#     if command == 'up':
-#         if map_data[]
+def collision_check(command):
+    dest_coord_x, dest_coord_y = hero_coord
+
+    if command == 'up':
+        dest_coord_y -= 1
+    elif command == 'down':
+        dest_coord_y += 1
+    elif command == 'left':
+        dest_coord_x -= 1
+    elif command == 'right':
+        dest_coord_x += 1
+
+    print(dest_coord_x, dest_coord_y)
+    print(map_data[dest_coord_y][dest_coord_x])
+    
+    if map_data[dest_coord_y][dest_coord_x] == '.':
+        return 'can move'
+    else:
+        return 'can\'t move there'
+
 
 
 # function to move character
@@ -271,12 +288,14 @@ def movement_command(command):
 game = Game()
 game.fight()
 map_data = map(16, 9)
-hero_coord = place_entity_randomly(map_data, '@') # place hero
+map_data[1][5] = '@' # place hero predeterminately
+hero_coord = (5, 1)
+# hero_coord = place_entity_randomly(map_data, '@') # place hero randomly
 monster_coord = place_entity_randomly(map_data, 'Z') # place zombie
 print(draw_map(map_data))
 print(f'hero at {hero_coord}')
 print(f'monster at {monster_coord}')
-# command = movement_command(input('command: '))
-# print(command)
-# collision_check(command)
+command = movement_command(input('command: '))
+print(command)
+print(collision_check(command))
 # print(map_data)
