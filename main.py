@@ -233,16 +233,21 @@ def draw_map(data):
         text += '\n'
     return text
 
-def place_entity_randomly(data, entity):
-    coord = []
-    for r in range(len(data)):
-        for c in range(len(data[r])):
-            if data[r][c] == '.':
-                coord.append((c, r))
-    random_coord = choice(coord)
-    x, y = random_coord
-    data[y][x] = entity
-    return random_coord
+def place_entity(data, entity, coord='random'):
+    if coord == 'random':
+        coord = []
+        for r in range(len(data)):
+            for c in range(len(data[r])):
+                if data[r][c] == '.':
+                    coord.append((c, r))
+        random_coord = choice(coord)
+        x, y = random_coord
+        data[y][x] = entity
+        return random_coord
+    else:
+        x, y = coord
+        data[y][x] = entity
+        return coord 
 
 # function to take a direction command to move character (arrow keys, wasd, nsew)
 def movement_command(command):
@@ -273,7 +278,7 @@ def collision_check(command):
 
     print(dest_coord_x, dest_coord_y)
     print(map_data[dest_coord_y][dest_coord_x])
-    
+
     if map_data[dest_coord_y][dest_coord_x] == '.':
         return 'can move'
     else:
@@ -288,14 +293,11 @@ def collision_check(command):
 game = Game()
 game.fight()
 map_data = map(16, 9)
-map_data[1][5] = '@' # place hero predeterminately
-hero_coord = (5, 1)
-# hero_coord = place_entity_randomly(map_data, '@') # place hero randomly
-monster_coord = place_entity_randomly(map_data, 'Z') # place zombie
+hero_coord = place_entity(map_data, '@') # place hero
+monster_coord = place_entity(map_data, 'Z') # place zombie
 print(draw_map(map_data))
 print(f'hero at {hero_coord}')
 print(f'monster at {monster_coord}')
 command = movement_command(input('command: '))
 print(command)
 print(collision_check(command))
-# print(map_data)
