@@ -233,7 +233,7 @@ def draw_map(data):
         text += '\n'
     return text
 
-def place_monster(data, monster):
+def place_entity_randomly(data, entity):
     coord = []
     for r in range(len(data)):
         for c in range(len(data[r])):
@@ -241,7 +241,8 @@ def place_monster(data, monster):
                 coord.append((c, r))
     random_coord = choice(coord)
     x, y = random_coord
-    data[y][x] = monster
+    data[y][x] = entity
+    return random_coord
 
 # function to take a direction command to move character (arrow keys, wasd, nsew)
 def movement_command(command):
@@ -258,6 +259,10 @@ def movement_command(command):
         return 'invalid command'
     
 # function to check for walls or monsters (collision)
+# def collision_check(command):
+#     if command == 'up':
+#         if map_data[]
+
 
 # function to move character
 
@@ -266,7 +271,12 @@ def movement_command(command):
 game = Game()
 game.fight()
 map_data = map(16, 9)
-map_data[5][5] = '@' # place hero
-place_monster(map_data, 'Z')
+hero_coord = place_entity_randomly(map_data, '@') # place hero
+monster_coord = place_entity_randomly(map_data, 'Z') # place zombie
 print(draw_map(map_data))
-print(movement_command(input('command: ')))
+print(f'hero at {hero_coord}')
+print(f'monster at {monster_coord}')
+# command = movement_command(input('command: '))
+# print(command)
+# collision_check(command)
+# print(map_data)
