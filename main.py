@@ -235,19 +235,15 @@ def draw_map(data):
 
 def place_entity(data, entity, coord='random'):
     if coord == 'random':
-        coord = []
+        coord_list = []
         for r in range(len(data)):
             for c in range(len(data[r])):
                 if data[r][c] == '.':
-                    coord.append((c, r))
-        random_coord = choice(coord)
-        x, y = random_coord
-        data[y][x] = entity
-        return random_coord
-    else:
-        x, y = coord
-        data[y][x] = entity
-        return coord 
+                    coord_list.append((c, r))
+        coord = choice(coord_list)
+    x, y = coord
+    data[y][x] = entity
+    return coord 
 
 # function to take a direction command to move character (arrow keys, wasd, nsew)
 def movement_command(command):
@@ -293,7 +289,7 @@ def collision_check(command):
 game = Game()
 game.fight()
 map_data = map(16, 9)
-hero_coord = place_entity(map_data, '@') # place hero
+hero_coord = place_entity(map_data, '@', (5, 5)) # place hero
 monster_coord = place_entity(map_data, 'Z') # place zombie
 print(draw_map(map_data))
 print(f'hero at {hero_coord}')
