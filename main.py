@@ -243,6 +243,14 @@ def place_monster(data, monster):
     x, y = random_coord
     data[y][x] = monster
 
+# function to take a direction command to move character (arrow keys, wasd, nsew)
+
+# function to check for walls or monsters (collision)
+
+# function to move character
+
+# damage formula incorporating stat bonuses
+
 game = Game()
 game.fight()
 map_data = map(16, 9)
