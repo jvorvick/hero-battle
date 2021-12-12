@@ -276,13 +276,20 @@ def collision_check(command):
     print(map_data[dest_coord_y][dest_coord_x])
 
     if map_data[dest_coord_y][dest_coord_x] == '.':
-        return 'can move'
-    else:
-        return 'can\'t move there'
-
-
+        return dest_coord_x, dest_coord_y
+    return False
 
 # function to move character
+def move_entity(destination):
+    if destination:
+        global hero_coord
+        old_coord_x, old_coord_y = hero_coord
+        map_data[old_coord_y][old_coord_x] = '.'
+        hero_coord = place_entity(map_data, '@', destination)
+        return draw_map(map_data)
+    else:
+        return None
+    
 
 # damage formula incorporating stat bonuses
 
@@ -296,4 +303,6 @@ print(f'hero at {hero_coord}')
 print(f'monster at {monster_coord}')
 command = movement_command(input('command: '))
 print(command)
-print(collision_check(command))
+destination = collision_check(command)
+print(destination)
+print(move_entity(destination))
