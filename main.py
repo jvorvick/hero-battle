@@ -277,7 +277,8 @@ def collision_check(command):
     # print(map_data[dest_coord_y][dest_coord_x])
 
     if map_data[dest_coord_y][dest_coord_x] == '.':
-        return dest_coord_x, dest_coord_y
+        destination = dest_coord_x, dest_coord_y
+        move_entity(destination)
     return False
 
 # function to move character
@@ -287,7 +288,7 @@ def move_entity(destination):
         old_coord_x, old_coord_y = hero_coord
         map_data[old_coord_y][old_coord_x] = '.'
         hero_coord = place_entity(map_data, '@', destination)
-        return draw_map(map_data)
+        print(draw_map(map_data))
     else:
         return None
     
@@ -307,5 +308,4 @@ print(f'monster at {monster_coord}')
 # destination = collision_check(command)
 # print(f'destination: {destination}')
 # print(move_entity(destination))
-
 movement_command()
