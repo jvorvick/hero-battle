@@ -246,18 +246,19 @@ def place_entity(data, entity, coord='random'):
     return coord 
 
 # function to take a direction command to move character (arrow keys, wasd, nsew)
-def movement_command(command):
+def movement_command():
+    command = input('command: ')
     command = command.upper()
     if command == 'UP' or command == 'W' or command == 'NORTH':
-        return 'up'
+        collision_check('up')
     elif command == 'DOWN' or command == 'S' or command == 'SOUTH':
-        return 'down'
+        collision_check('down')
     elif command == 'LEFT' or command == 'W' or command == 'WEST':
-        return 'west'
+        collision_check('left')
     elif command == 'RIGHT' or command == 'E' or command == 'EAST':
-        return 'east'
+        collision_check('right')
     else:
-        return 'invalid command'
+        print('invalid command')
     
 # function to check for walls or monsters (collision)
 def collision_check(command):
@@ -272,8 +273,8 @@ def collision_check(command):
     elif command == 'right':
         dest_coord_x += 1
 
-    print(dest_coord_x, dest_coord_y)
-    print(map_data[dest_coord_y][dest_coord_x])
+    # print(dest_coord_x, dest_coord_y)
+    # print(map_data[dest_coord_y][dest_coord_x])
 
     if map_data[dest_coord_y][dest_coord_x] == '.':
         return dest_coord_x, dest_coord_y
@@ -301,8 +302,10 @@ monster_coord = place_entity(map_data, 'Z') # place zombie
 print(draw_map(map_data))
 print(f'hero at {hero_coord}')
 print(f'monster at {monster_coord}')
-command = movement_command(input('command: '))
-print(command)
-destination = collision_check(command)
-print(destination)
-print(move_entity(destination))
+# command = movement_command(input('command: '))
+# print(f'direction: {command}')
+# destination = collision_check(command)
+# print(f'destination: {destination}')
+# print(move_entity(destination))
+
+movement_command()
