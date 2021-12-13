@@ -246,45 +246,34 @@ def place_entity(data, entity, coord='random'):
     return coord 
 
 # function to take a direction command to move character (arrow keys, wasd, nsew)
-def movement_command():
+def movement_command(hero_coord):
     command = input('command: ')
     command = command.upper()
-    if command == 'UP' or command == 'W' or command == 'NORTH':
-        collision_check('up')
-    elif command == 'DOWN' or command == 'S' or command == 'SOUTH':
-        collision_check('down')
-    elif command == 'LEFT' or command == 'W' or command == 'WEST':
-        collision_check('left')
-    elif command == 'RIGHT' or command == 'E' or command == 'EAST':
-        collision_check('right')
-    else:
-        print('invalid command')
-    
-# function to check for walls or monsters (collision)
-def collision_check(command):
     dest_coord_x, dest_coord_y = hero_coord
 
-    if command == 'up':
+    if command in ['UP', 'W', 'NORTH']:
         dest_coord_y -= 1
-    elif command == 'down':
+    elif command in ['DOWN', 'S', 'SOUTH']:
         dest_coord_y += 1
-    elif command == 'left':
+    elif command in ['LEFT', 'W', 'WEST']:
         dest_coord_x -= 1
-    elif command == 'right':
+    elif command in ['RIGHT', 'E', 'EAST']:
         dest_coord_x += 1
+    else:
+        print('invalid command')
 
-    # print(dest_coord_x, dest_coord_y)
-    # print(map_data[dest_coord_y][dest_coord_x])
+    destination = dest_coord_x, dest_coord_y
+    if collision_check(destination):
+        move_entity(destination, hero_coord)
 
-    if map_data[dest_coord_y][dest_coord_x] == '.':
-        destination = dest_coord_x, dest_coord_y
-        move_entity(destination)
-    return False
+# function to check for walls or monsters (collision)
+def collision_check(destination):
+    dest_coord_x, dest_coord_y = destination
+    return map_data[dest_coord_y][dest_coord_x] == '.'
 
 # function to move character
-def move_entity(destination):
+def move_entity(destination, hero_coord):
     if destination:
-        global hero_coord
         old_coord_x, old_coord_y = hero_coord
         map_data[old_coord_y][old_coord_x] = '.'
         hero_coord = place_entity(map_data, '@', destination)
@@ -292,7 +281,6 @@ def move_entity(destination):
     else:
         return None
     
-
 # damage formula incorporating stat bonuses
 
 game = Game()
@@ -308,4 +296,4 @@ print(f'monster at {monster_coord}')
 # destination = collision_check(command)
 # print(f'destination: {destination}')
 # print(move_entity(destination))
-movement_command()
+movement_command(hero_coord)
