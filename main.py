@@ -136,8 +136,36 @@ class Battleaxe(Weapon):
         return f'{self.item_type}: {self.name}, +{self.modifier["strength"]} damage'
 
 class Map():
-    pass
-            
+    def __init__(self, width, height):
+        self.data = []
+        for y in range(height):
+            row = []
+            for x in range(width):
+                if x == width - 1 or x == 0 or y == 0 or y == height - 1:
+                    row.append('#')
+                else:
+                    row.append('.')
+            self.data.append(row)
+
+    def place_entity(self, entity, coord='random'):
+        if coord == 'random':
+            coord_list = []
+            for r in range(len(self.data)):
+                for c in range(len(self.data[r])):
+                    if self.data[r][c] == '.':
+                        coord_list.append((c, r))
+            coord = choice(coord_list)
+        x, y = coord
+        self.data[y][x] = entity
+        return coord 
+    
+    def __str__(self):
+        text = '\n'
+        for r in self.data:
+            for c in r:
+                text += c + ' '
+            text += '\n'
+        return text
 
     # def __repr__(self):
     #     for x in self.layout:
@@ -151,9 +179,9 @@ class Game:
             Barbarian('Conan'),
             Zombie('Zed')
         ]
-        self.map_data = self.map(16, 9)
-        self.hero_coord = self.place_entity('@', (5, 5)) # place hero
-        self.monster_coord = self.place_entity('Z') # place zombie
+        self.map = Map(16, 9)
+        self.hero_coord = self.map.place_entity('@', (5, 5)) # place hero
+        self.monster_coord = self.map.place_entity('Z') # place zombie
         print(f'hero at {self.hero_coord}')
         print(f'monster at {self.monster_coord}')
         # print(self.player_list[0].inventory)
@@ -165,7 +193,7 @@ class Game:
     
     def play(self):
         while True:
-            print(self.draw_map())
+            print(self.map)
             print(self.hero_coord)
             command = input('command: ')
             if command in ['q', 'quit', 'exit', '']:
@@ -187,21 +215,21 @@ class Game:
         a = self.player_list[0]
         b = self.player_list[1]
 
-        # while a.alive() and b.alive():
-        #     self.attack(a, b)
-        #     self.attack(b, a)
-        #     print(a.name, a.health)
-        #     print(b.name, b.health)
+        while a.alive() and b.alive():
+            self.attack(a, b)
+            self.attack(b, a)
+            print(a.name, a.health)
+            print(b.name, b.health)
 
-        # if a.dead() and b.dead():
-        #     print(f'It\'s a massacre! {a.name} and {b.name} are both dead!')
-        # elif a.dead():
-        #     print(f'Our hero {a.name} has been slain! Game over.')
-        # else:
-        #     print(f'Huzzah! {a.name} has slain {b.name}!')
+        if a.dead() and b.dead():
+            print(f'It\'s a massacre! {a.name} and {b.name} are both dead!')
+        elif a.dead():
+            print(f'Our hero {a.name} has been slain! Game over.')
+        else:
+            print(f'Huzzah! {a.name} has slain {b.name}!')
 
-        # print(a.name, a.health)
-        # print(b.name, b.health)
+        print(a.name, a.health)
+        print(b.name, b.health)
 
 # def map():
 #     layout = [
@@ -223,38 +251,6 @@ class Game:
 #     for r in layout:
 #         print(' '.join(r))
 #     print(layout)
-
-    def map(self, width, height):
-        output = []
-        for y in range(height):
-            row = []
-            for x in range(width):
-                if x == width - 1 or x == 0 or y == 0 or y == height - 1:
-                    row.append('#')
-                else:
-                    row.append('.')
-            output.append(row)
-        return output
-
-    def draw_map(self):
-        text = '\n'
-        for r in self.map_data:
-            for c in r:
-                text += c + ' '
-            text += '\n'
-        return text
-
-    def place_entity(self, entity, coord='random'):
-        if coord == 'random':
-            coord_list = []
-            for r in range(len(self.map_data)):
-                for c in range(len(self.map_data[r])):
-                    if self.map_data[r][c] == '.':
-                        coord_list.append((c, r))
-            coord = choice(coord_list)
-        x, y = coord
-        self.map_data[y][x] = entity
-        return coord 
 
     # function to take a direction command to move character (arrow keys, wasd, nsew)
     def movement_command(self, hero_coord, command):
@@ -283,15 +279,15 @@ class Game:
     # function to check for walls or monsters (collision)
     def collision_check(self, destination):
         dest_coord_x, dest_coord_y = destination
-        return self.map_data[dest_coord_y][dest_coord_x] == '.'
+        if self.map.data[dest_coord_y][dest_coord_x] == 'Z':
+            self.fight()e
+        return self.map.data[dest_coord_y][dest_coord_x] == '.'
 
     # function to move character
     def update_map(self, destination, hero_coord):
         old_coord_x, old_coord_y = hero_coord
-        self.map_data[old_coord_y][old_coord_x] = '.'
-        self.place_entity('@', destination)
-
-
+        self.map.data[old_coord_y][old_coord_x] = '.'
+        self.map.place_entity('@', destination)
 
 # damage formula incorporating stat bonuses
 
