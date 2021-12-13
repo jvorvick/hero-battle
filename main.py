@@ -227,10 +227,12 @@ class Game:
             print(f'Our hero {a.name} has been slain! Game over.')
         else:
             print(f'Huzzah! {a.name} has slain {b.name}!')
+            
 
         print(a.name, a.health)
         print(b.name, b.health)
-
+        exit()
+        
 # def map():
 #     layout = [
 #         ['x', 'x', 'x'],
@@ -262,9 +264,9 @@ class Game:
             dest_coord_y -= 1
         elif command in ['DOWN', 'S', 'SOUTH']:
             dest_coord_y += 1
-        elif command in ['LEFT', 'W', 'WEST']:
+        elif command in ['LEFT', 'A', 'WEST']:
             dest_coord_x -= 1
-        elif command in ['RIGHT', 'E', 'EAST']:
+        elif command in ['RIGHT', 'D', 'EAST']:
             dest_coord_x += 1
         else:
             print('invalid command')
@@ -280,7 +282,7 @@ class Game:
     def collision_check(self, destination):
         dest_coord_x, dest_coord_y = destination
         if self.map.data[dest_coord_y][dest_coord_x] == 'Z':
-            self.fight()e
+            self.fight()
         return self.map.data[dest_coord_y][dest_coord_x] == '.'
 
     # function to move character
