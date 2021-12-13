@@ -246,8 +246,8 @@ def place_entity(data, entity, coord='random'):
     return coord 
 
 # function to take a direction command to move character (arrow keys, wasd, nsew)
-def movement_command(hero_coord):
-    command = input('command: ')
+def movement_command(hero_coord, command):
+    
     command = command.upper()
     dest_coord_x, dest_coord_y = hero_coord
 
@@ -264,7 +264,10 @@ def movement_command(hero_coord):
 
     destination = dest_coord_x, dest_coord_y
     if collision_check(destination):
-        move_entity(destination, hero_coord)
+        update_map(destination, hero_coord)
+        return destination
+    else:
+        return hero_coord
 
 # function to check for walls or monsters (collision)
 def collision_check(destination):
@@ -272,15 +275,13 @@ def collision_check(destination):
     return map_data[dest_coord_y][dest_coord_x] == '.'
 
 # function to move character
-def move_entity(destination, hero_coord):
-    if destination:
-        old_coord_x, old_coord_y = hero_coord
-        map_data[old_coord_y][old_coord_x] = '.'
-        hero_coord = place_entity(map_data, '@', destination)
-        print(draw_map(map_data))
-    else:
-        return None
-    
+def update_map(destination, hero_coord):
+    old_coord_x, old_coord_y = hero_coord
+    map_data[old_coord_y][old_coord_x] = '.'
+    place_entity(map_data, '@', destination)
+
+
+
 # damage formula incorporating stat bonuses
 
 game = Game()
@@ -288,7 +289,6 @@ game.fight()
 map_data = map(16, 9)
 hero_coord = place_entity(map_data, '@', (5, 5)) # place hero
 monster_coord = place_entity(map_data, 'Z') # place zombie
-print(draw_map(map_data))
 print(f'hero at {hero_coord}')
 print(f'monster at {monster_coord}')
 # command = movement_command(input('command: '))
@@ -296,4 +296,12 @@ print(f'monster at {monster_coord}')
 # destination = collision_check(command)
 # print(f'destination: {destination}')
 # print(move_entity(destination))
-movement_command(hero_coord)
+hero_coord = movement_command(hero_coord, 'up')
+hero_coord = movement_command(hero_coord, 'up')
+hero_coord = movement_command(hero_coord, 'right')
+hero_coord = movement_command(hero_coord, 'right')
+while True:
+    print(draw_map(map_data))
+    print(hero_coord)
+    command = input('command: ')
+    hero_coord = movement_command(hero_coord, command)
