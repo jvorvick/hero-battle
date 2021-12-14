@@ -11,11 +11,13 @@ future: weapons, armor, treasure, inventory, accuracy, experience, stat increase
 from random import randint, choice
 
 class Entity:
-    def __init__(self, name, character_class, strength=18, dexterity=18, health=100, inventory=None, equip=None):
+    def __init__(self, name, character_class, strength=18, attack=18, dexterity=18, defense=18, health=100, inventory=None, equip=None):
         self.name = name
         self.character_class = character_class
         self.strength = strength
+        self.attack = attack
         self.dexterity = dexterity
+        self.defense = defense
         self.health = health 
         self.inventory = [] if inventory is None else inventory # ternery operator: mandatory in Python to prevent shared inventory
         self.equip = [] if equip is None else equip
@@ -27,16 +29,16 @@ class Entity:
         return self.health <= 0
 
 class Barbarian(Entity): # A Hero is a kind of Entity
-    def __init__(self, name, strength=18, dexterity=18, health=100):
+    def __init__(self, name, strength=18, attack=18, dexterity=18, defense=18, health=100):
         super().__init__(
-            name, 'barbarian', strength, dexterity, health, #stats
+            name, 'barbarian', strength, attack, dexterity, defense, health, #stats
             [HealthPotion(), ManaPotion()], #inv
             [AmuletOfStrength(), Battleaxe()] #equip
         )
 
 class Zombie(Entity): # A Monster is a kind of Entity
-    def __init__(self, name, strength=18, dexterity=18, health=100):
-        super().__init__(name, 'zombie', strength, dexterity, health,
+    def __init__(self, name, strength=18, attack=18, dexterity=18, defense=18, health=100):
+        super().__init__(name, 'zombie', strength, attack, dexterity, defense, health,
             [],
             []
         )
@@ -206,6 +208,7 @@ class Game:
         roll = randint(1, 100)
         if roll < chance:
             damage = randint(1, attacker.strength)
+            # damage = attack * (100 / (100 + defense))
             defender.health -= damage
             print(f'The {attacker.character_class} {attacker.name} hits the {defender.character_class} {defender.name} for {damage}!')
         else:
@@ -232,7 +235,7 @@ class Game:
         print(a.name, a.health)
         print(b.name, b.health)
         exit()
-        
+
 # def map():
 #     layout = [
 #         ['x', 'x', 'x'],
