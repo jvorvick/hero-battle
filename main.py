@@ -18,7 +18,7 @@ class Entity:
         self.attack = attack
         self.dexterity = dexterity
         self.defense = defense
-        self.health = health 
+        self.health = health
         self.inventory = [] if inventory is None else inventory # ternery operator: mandatory in Python to prevent shared inventory
         self.equip = [] if equip is None else equip
     
@@ -37,7 +37,7 @@ class Barbarian(Entity): # A Hero is a kind of Entity
         )
 
 class Zombie(Entity): # A Monster is a kind of Entity
-    def __init__(self, name, strength=18, attack=18, dexterity=18, defense=18, health=100):
+    def __init__(self, name, strength=15, attack=15, dexterity=15, defense=15, health=80):
         super().__init__(name, 'zombie', strength, attack, dexterity, defense, health,
             [],
             []
@@ -207,8 +207,8 @@ class Game:
         chance = base_percent + attacker.dexterity - defender.dexterity
         roll = randint(1, 100)
         if roll < chance:
-            damage = randint(1, attacker.strength)
-            # damage = attack * (100 / (100 + defense))
+            # damage = randint(1, attacker.strength)
+            damage = round(attacker.attack * (100 / (100 + defender.defense)))
             defender.health -= damage
             print(f'The {attacker.character_class} {attacker.name} hits the {defender.character_class} {defender.name} for {damage}!')
         else:
@@ -297,4 +297,5 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-game.play()
+# game.play()
+game.fight()
