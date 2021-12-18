@@ -22,6 +22,12 @@ class Entity:
         self.equip = [] if equip is None else equip
         
         self.attack = strength
+
+    def equip_modifier(self):
+        for item in self.equip:
+            for k, v in item.modifier.items():
+                print(getattr(self, k))
+        print(self.strength, self.health)
     
     def alive(self):
         return self.health > 0
@@ -48,7 +54,7 @@ class Item:
     def __init__(self, item_type):
         self.item_type = item_type
 
-    def modifer_to_str(self, mods):
+    def modifier_to_str(self, mods):
         return ', '.join([f'{k} {v}' for k, v in mods.items()])
 
     def __repr__(self):
@@ -114,7 +120,7 @@ class AmuletOfStrength(Accessory):
         return 'AmuletOfStrength()'
 
     def __str__(self):
-        return f'{self.item_type}: {self.name}, {self.modifer_to_str(self.modifier)}'
+        return f'{self.item_type}: {self.name}, {self.modifier_to_str(self.modifier)}'
 
 class Weapon(Item):
     def __init__(self):
@@ -300,4 +306,7 @@ class Game:
 game = Game()
 # game.play()
 # game.fight()
+
 print(f'strength: {game.player_list[0].strength}, attack: {game.player_list[0].attack}')
+print(game.player_list[0].equip[0])
+game.player_list[0].equip_modifier()
