@@ -22,12 +22,13 @@ class Entity:
         self.equip = [] if equip is None else equip
         
         self.attack = strength
+        self.equip_modifier()
 
     def equip_modifier(self):
         for item in self.equip:
             for k, v in item.modifier.items():
-                print(getattr(self, k))
-        print(self.strength, self.health)
+                new_attribute = getattr(self, k) + v
+                setattr(self, k, new_attribute)
     
     def alive(self):
         return self.health > 0
@@ -307,6 +308,5 @@ game = Game()
 # game.play()
 # game.fight()
 
-print(f'strength: {game.player_list[0].strength}, attack: {game.player_list[0].attack}')
-print(game.player_list[0].equip[0])
-game.player_list[0].equip_modifier()
+# game.player_list[0].equip_modifier()
+print(f'strength: {game.player_list[0].strength}, attack: {game.player_list[0].attack}, health: {game.player_list[0].health}')
