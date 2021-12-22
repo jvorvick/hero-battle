@@ -29,6 +29,8 @@ class Entity:
             for k, v in item.modifier.items():
                 new_attribute = getattr(self, k) + v
                 setattr(self, k, new_attribute)
+                if k == 'strength':
+                    self.attack += v
     
     def alive(self):
         return self.health > 0
@@ -137,7 +139,7 @@ class Battleaxe(Weapon):
     def __init__(self):
         super().__init__()
         self.name = 'Battleaxe'
-        self.modifier = {'strength': 5}
+        self.modifier = {'attack': 5}
 
     def __repr__(self):
         return 'Battleaxe()'
