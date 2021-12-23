@@ -36,6 +36,8 @@ class Entity:
         return self.health > 0
 
     def dead(self):
+        if issubclass(self, Monster):
+            Map.place_entity('T', Game.monster_coord)
         return self.health <= 0
 
 class Barbarian(Entity): # A Hero is a kind of Entity
@@ -46,12 +48,18 @@ class Barbarian(Entity): # A Hero is a kind of Entity
             [AmuletOfStrength(), Battleaxe()] #equip
         )
 
-class Zombie(Entity): # A Monster is a kind of Entity
+class Monster(Entity): # A Monster is a kind of Entity
     def __init__(self, name, strength=15, dexterity=15, defense=15, health=80):
         super().__init__(name, 'zombie', strength, dexterity, defense, health,
             [],
             []
         )
+
+class Zombie(Monster):
+    pass
+
+class TreasureChest(Entity):
+    pass
 
 class Item:
     def __init__(self, item_type):
@@ -307,7 +315,7 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-# game.play()
+game.play()
 # game.fight()
 
 # game.player_list[0].equip_modifier()
