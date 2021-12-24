@@ -36,8 +36,6 @@ class Entity:
         return self.health > 0
 
     def dead(self):
-        if issubclass(self, Monster):
-            Map.place_entity('T', Game.monster_coord)
         return self.health <= 0
 
 class Barbarian(Entity): # A Hero is a kind of Entity
@@ -247,12 +245,13 @@ class Game:
         elif a.dead():
             print(f'Our hero {a.name} has been slain! Game over.')
         else:
+            if isinstance(b, Monster):
+                Map.place_entity(self.map, 'T', self.monster_coord)
             print(f'Huzzah! {a.name} has slain {b.name}!')
             
-
         print(a.name, a.health)
         print(b.name, b.health)
-        exit()
+        # exit()
 
 # def map():
 #     layout = [
