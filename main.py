@@ -246,7 +246,7 @@ class Game:
             print(f'Our hero {a.name} has been slain! Game over.')
         else:
             if isinstance(b, Monster):
-                Map.place_entity(self.map, 'T', self.monster_coord)
+                self.map.place_entity('T', self.monster_coord)
             print(f'Huzzah! {a.name} has slain {b.name}!')
             
         print(a.name, a.health)
