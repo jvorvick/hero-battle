@@ -233,18 +233,14 @@ class Game:
 
     def get_command(self):
         command = input('command: ')
-        if command in ['q', 'quit', 'exit', '']:
-           return 'quit'
         return command
 
     def play(self):
-        while True:
+        self.is_playing = True
+        while self.is_playing:
             self.display()
             command = self.get_command()
-            if command == 'quit':
-                break
-            self.update_state(self.input_to_message(command))
-
+            self.update_state(command)
 
     def attack(self, attacker, defender):
         base_percent = 50
@@ -314,12 +310,19 @@ class Game:
             message = 'left'
         elif command in ['RIGHT', 'D', 'EAST']:
             message = 'right'
+        elif command in ['Q', 'QUIT', 'EXIT']:
+            message = 'quit'
         return message
 
     # function to take a direction command to move character (arrow keys, wasd, nsew)
     def update_state(self, command):
-        if command == '':
+        message = self.input_to_message(command)
+        if message == '':
             return
+        if message == 'quit':
+            self.is_playing = False
+            return
+            
         p = self.entities[0].position
         dest = Position(p.x, p.y)
         
@@ -332,8 +335,8 @@ class Game:
             'right': [1, 0]
         }
         
-        dest.x += data[command][0]
-        dest.y += data[command][1]
+        dest.x += data[message][0]
+        dest.y += data[message][1]
 
         # destination = Position(dest.x, dest.y)
         # if self.collision_check(destination):
@@ -360,8 +363,8 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-game.play()
+# game.play()
 # game.fight()
 
 # game.entities[0].equip_modifier()
-# print(f'strength: {game.entities[0].strength}, attack: {game.entities[0].attack}, health: {game.entities[0].health}')
+print(f'strength: {game.entities[0].strength}, attack: {game.entities[0].attack}, health: {game.entities[0].health}, dexterity: {game.entities[0].dexterity}, defense: {game.entities[0].defense}')
