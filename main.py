@@ -353,8 +353,9 @@ class Game:
 
     # function to check for walls or monsters (collision)
     def collision_check(self, dest):
-        if self.map.map_data[dest.y][dest.x] == 'Z':
-            self.fight()
+        for entity in self.entities:
+            if dest.x == entity.position.x and dest.y == entity.position.y:
+                self.fight()
         return self.is_empty(dest)
 
     # function to move character
@@ -366,7 +367,7 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-# game.play()
+game.play()
 # game.fight()
 
 # game.entities[0].equip_modifier()
