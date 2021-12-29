@@ -227,17 +227,18 @@ class Game:
         # print(f'monster at {self.monster_coord}')
     
     def display(self):
+        self.map = Map(self.dimensions, self.entities)
         print('STATUS:')
         print(self.map)
 
     def play(self):
         while True:
-            self.map = Map(self.dimensions, self.entities)
             self.display()
             command = input('command: ')
             if command in ['q', 'quit', 'exit', '']:
                 break
-            self.entities[0].position = self.movement_command(self.entities[0].position, command)
+            self.update_state(self.input_to_message(command))
+
 
     def attack(self, attacker, defender):
         base_percent = 50
@@ -296,29 +297,44 @@ class Game:
 #         print(' '.join(r))
 #     print(layout)
 
-    # function to take a direction command to move character (arrow keys, wasd, nsew)
-    def movement_command(self, position, command):
-        
+    def input_to_message(self, command):
+        message = ''
         command = command.upper()
-        dest_coord_x, dest_coord_y = (position.x, position.y)
-
         if command in ['UP', 'W', 'NORTH']:
-            dest_coord_y -= 1
+            message = 'up'
         elif command in ['DOWN', 'S', 'SOUTH']:
-            dest_coord_y += 1
+            message = 'down'
         elif command in ['LEFT', 'A', 'WEST']:
-            dest_coord_x -= 1
+            message = 'left'
         elif command in ['RIGHT', 'D', 'EAST']:
-            dest_coord_x += 1
-        else:
-            print('invalid command')
+            message = 'right'
+        return message
 
-        destination = Position(dest_coord_x, dest_coord_y)
-        if self.collision_check(destination):
-            # self.update_map(destination, position)
-            return destination
-        else:
-            return position
+    # function to take a direction command to move character (arrow keys, wasd, nsew)
+    def update_state(self, command):
+        if command == '':
+            return
+        p = self.entities[0].position
+        dest = Position(p.x, p.y)
+        
+        # dest_coord_x, dest_coord_y = (position.x, position.y)
+
+        data = {
+            'up': [0, -1],
+            'down': [0, 1],
+            'left': [-1, 0],
+            'right': [1, 0]
+        }
+
+        dest.x += data[command][0]
+        dest.y += data[command][1]
+
+        # destination = Position(dest.x, dest.y)
+        # if self.collision_check(destination):
+        #     self.entities[0].position = destination
+    
+        if self.collision_check(dest):
+            self.entities[0].position = dest
 
     def is_empty(self, dest):
         return self.map.map_data[dest.y][dest.x] == '.'
