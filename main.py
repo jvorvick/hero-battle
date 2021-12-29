@@ -21,18 +21,18 @@ class Sprite:
         self.graphic = graphic
 
 class Entity(Sprite):
-    def __init__(self, position, graphic, name='', character_class='', strength=18, dexterity=18, defense=18, health=100, inventory=None, equip=None):
+    def __init__(self, position, graphic, name='', character_class='', strength=18, dexterity=18, health=100, inventory=None, equip=None):
         super().__init__(position, graphic)
         self.name = name
         self.character_class = character_class
         self.strength = strength
         self.dexterity = dexterity
-        self.defense = defense
         self.health = health
         self.inventory = [] if inventory is None else inventory # ternery operator: mandatory in Python to prevent shared inventory
         self.equip = [] if equip is None else equip
         
         self.attack = strength
+        self.defense = dexterity
         self.equip_modifier()
         
     def equip_modifier(self):
@@ -42,6 +42,8 @@ class Entity(Sprite):
                 setattr(self, k, new_attribute)
                 if k == 'strength':
                     self.attack += v
+                if k == 'dexterity':
+                    self.defense += v
     
     def alive(self):
         return self.health > 0
@@ -50,16 +52,16 @@ class Entity(Sprite):
         return self.health <= 0
 
 class Barbarian(Entity): # A Hero is a kind of Entity
-    def __init__(self, position, graphic, name, strength=20, dexterity=18, defense=18, health=100):
+    def __init__(self, position, graphic, name, strength=20, dexterity=18, health=100):
         super().__init__(
-            position, graphic, name, 'barbarian', strength, dexterity, defense, health, #stats
+            position, graphic, name, 'barbarian', strength, dexterity, health, #stats
             [HealthPotion(), ManaPotion()], #inv
             [AmuletOfStrength(), Battleaxe()] #equip
         )
 
 class Monster(Entity): # A Monster is a kind of Entity
-    def __init__(self, position, graphic, name='', strength=15, dexterity=15, defense=15, health=80):
-        super().__init__(position, graphic, name, 'zombie', strength, dexterity, defense, health,
+    def __init__(self, position, graphic, name='', strength=15, dexterity=15, health=80):
+        super().__init__(position, graphic, name, 'zombie', strength, dexterity, health,
             [],
             []
         )
@@ -135,7 +137,8 @@ class AmuletOfStrength(Accessory):
         self.name = 'Amulet of Strength'
         self.modifier = {
             'strength': 5,
-            'health': -2
+            'health': -2,
+            'dexterity': -2
         }
 
     def __repr__(self):
