@@ -218,7 +218,7 @@ class Game:
         self.dimensions = Dimensions(16, 12)
         self.entities = [
             Barbarian(Position(5, 5), '@', 'Conan'),
-            Zombie(Position(9, 9))
+            Zombie(Position(7, 5))
         ]
         # self.map = Map(self.dimensions, self.entities)
         # self.hero_coord = self.map.place_entity('@', (5, 5)) # place hero
@@ -231,11 +231,17 @@ class Game:
         print('STATUS:')
         print(self.map)
 
+    def get_command(self):
+        command = input('command: ')
+        if command in ['q', 'quit', 'exit', '']:
+           return 'quit'
+        return command
+
     def play(self):
         while True:
             self.display()
-            command = input('command: ')
-            if command in ['q', 'quit', 'exit', '']:
+            command = self.get_command()
+            if command == 'quit':
                 break
             self.update_state(self.input_to_message(command))
 
@@ -325,7 +331,7 @@ class Game:
             'left': [-1, 0],
             'right': [1, 0]
         }
-
+        
         dest.x += data[command][0]
         dest.y += data[command][1]
 
