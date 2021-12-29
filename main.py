@@ -10,8 +10,19 @@ future: weapons, armor, treasure, inventory, accuracy, experience, stat increase
 
 from random import randint, choice
 
-class Entity:
-    def __init__(self, name, character_class, strength=18, dexterity=18, defense=18, health=100, inventory=None, equip=None):
+class Position:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class Sprite:
+    def __init__(self, position, graphic):
+        self.position = position
+        self.graphic = graphic
+
+class Entity(Sprite):
+    def __init__(self, position, graphic, name='', character_class='', strength=18, dexterity=18, defense=18, health=100, inventory=None, equip=None):
+        super().__init__(position, graphic)
         self.name = name
         self.character_class = character_class
         self.strength = strength
@@ -23,7 +34,7 @@ class Entity:
         
         self.attack = strength
         self.equip_modifier()
-
+        
     def equip_modifier(self):
         for item in self.equip:
             for k, v in item.modifier.items():
@@ -39,22 +50,24 @@ class Entity:
         return self.health <= 0
 
 class Barbarian(Entity): # A Hero is a kind of Entity
-    def __init__(self, name, strength=20, dexterity=18, defense=18, health=100):
+    def __init__(self, position, graphic, name, strength=20, dexterity=18, defense=18, health=100):
         super().__init__(
-            name, 'barbarian', strength, dexterity, defense, health, #stats
+            position, graphic, name, 'barbarian', strength, dexterity, defense, health, #stats
             [HealthPotion(), ManaPotion()], #inv
             [AmuletOfStrength(), Battleaxe()] #equip
         )
 
 class Monster(Entity): # A Monster is a kind of Entity
-    def __init__(self, name, strength=15, dexterity=15, defense=15, health=80):
-        super().__init__(name, 'zombie', strength, dexterity, defense, health,
+    def __init__(self, position, graphic, name='', strength=15, dexterity=15, defense=15, health=80):
+        super().__init__(position, graphic, name, 'zombie', strength, dexterity, defense, health,
             [],
             []
         )
 
 class Zombie(Monster):
-    pass
+    def __init__(self, position):
+        super().__init__(position, 'Z')
+        self.health = 40
 
 class TreasureChest(Entity):
     pass
@@ -154,32 +167,36 @@ class Battleaxe(Weapon):
         return f'{self.item_type}: {self.name}, +{self.modifier["strength"]} damage'
 
 class Map():
-    def __init__(self, width, height):
-        self.data = []
-        for y in range(height):
+    def __init__(self, dimensions, entities):
+        self.dimensions = dimensions
+        self.entities = entities
+        self.map_data = []
+        for y in range(self.dimensions.height):
             row = []
-            for x in range(width):
-                if x == width - 1 or x == 0 or y == 0 or y == height - 1:
+            for x in range(self.dimensions.width):
+                if (x == self.dimensions.width - 1) or (x == 0) or (y == 0) or (y == self.dimensions.height - 1):
                     row.append('#')
                 else:
                     row.append('.')
-            self.data.append(row)
+            self.map_data.append(row)
 
-    def place_entity(self, entity, coord='random'):
-        if coord == 'random':
-            coord_list = []
-            for r in range(len(self.data)):
-                for c in range(len(self.data[r])):
-                    if self.data[r][c] == '.':
-                        coord_list.append((c, r))
-            coord = choice(coord_list)
-        x, y = coord
-        self.data[y][x] = entity
-        return coord 
+    # def place_entity(self, entity, coord='random'):
+    #     if coord == 'random':
+    #         coord_list = []
+    #         for r in range(len(self.data)):
+    #             for c in range(len(self.data[r])):
+    #                 if self.data[r][c] == '.':
+    #                     coord_list.append((c, r))
+    #         coord = choice(coord_list)
+    #     x, y = coord
+    #     self.data[y][x] = entity
+    #     return coord 
     
     def __str__(self):
+        for e in self.entities:
+            self.map_data[e.position.y][e.position.x] = e.graphic
         text = '\n'
-        for r in self.data:
+        for r in self.map_data:
             for c in r:
                 text += c + ' '
             text += '\n'
@@ -190,33 +207,37 @@ class Map():
     #         str(x)
 
     # def __str__(self):
-        
+
+class Dimensions:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
 class Game:
     def __init__(self):
-        self.player_list = [
-            Barbarian('Conan'),
-            Zombie('Zed')
+        self.dimensions = Dimensions(16, 12)
+        self.entities = [
+            Barbarian(Position(5, 5), '@', 'Conan'),
+            Zombie(Position(9, 9))
         ]
-        self.map = Map(16, 9)
-        self.hero_coord = self.map.place_entity('@', (5, 5)) # place hero
-        self.monster_coord = self.map.place_entity('Z') # place zombie
-        print(f'hero at {self.hero_coord}')
-        print(f'monster at {self.monster_coord}')
-        # print(self.player_list[0].inventory)
-        # print(self.player_list[0].inventory[0])
-        # print(self.player_list[0].inventory[1])
-        # print(self.player_list[0].equip)
-        # print(self.player_list[0].equip[0])
-        # print(self.player_list[0].equip[1])
+        # self.map = Map(self.dimensions, self.entities)
+        # self.hero_coord = self.map.place_entity('@', (5, 5)) # place hero
+        # self.monster_coord = self.map.place_entity('Z') # place zombie
+        # print(f'hero at {self.hero_coord}')
+        # print(f'monster at {self.monster_coord}')
     
+    def display(self):
+        print('STATUS:')
+        print(self.map)
+
     def play(self):
         while True:
-            print(self.map)
-            print(self.hero_coord)
+            self.map = Map(self.dimensions, self.entities)
+            self.display()
             command = input('command: ')
             if command in ['q', 'quit', 'exit', '']:
                 break
-            self.hero_coord = self.movement_command(self.hero_coord, command)
+            self.entities[0].position = self.movement_command(self.entities[0].position, command)
 
     def attack(self, attacker, defender):
         base_percent = 50
@@ -231,8 +252,8 @@ class Game:
             print(f'The {attacker.character_class} {attacker.name} misses the {defender.character_class} {defender.name}!')
 
     def fight(self):
-        a = self.player_list[0]
-        b = self.player_list[1]
+        a = self.entities[0]
+        b = self.entities[1]
 
         while a.alive() and b.alive():
             self.attack(a, b)
@@ -245,8 +266,9 @@ class Game:
         elif a.dead():
             print(f'Our hero {a.name} has been slain! Game over.')
         else:
-            if isinstance(b, Monster):
-                self.map.place_entity('T', self.monster_coord)
+            # if isinstance(b, Monster):
+            #     self.map.place_entity('T', self.monster_coord)
+            self.entities.remove(b)
             print(f'Huzzah! {a.name} has slain {b.name}!')
             
         print(a.name, a.health)
@@ -275,10 +297,10 @@ class Game:
 #     print(layout)
 
     # function to take a direction command to move character (arrow keys, wasd, nsew)
-    def movement_command(self, hero_coord, command):
+    def movement_command(self, position, command):
         
         command = command.upper()
-        dest_coord_x, dest_coord_y = hero_coord
+        dest_coord_x, dest_coord_y = (position.x, position.y)
 
         if command in ['UP', 'W', 'NORTH']:
             dest_coord_y -= 1
@@ -291,25 +313,27 @@ class Game:
         else:
             print('invalid command')
 
-        destination = dest_coord_x, dest_coord_y
+        destination = Position(dest_coord_x, dest_coord_y)
         if self.collision_check(destination):
-            self.update_map(destination, hero_coord)
+            # self.update_map(destination, position)
             return destination
         else:
-            return hero_coord
+            return position
+
+    def is_empty(self, dest):
+        return self.map.map_data[dest.y][dest.x] == '.'
 
     # function to check for walls or monsters (collision)
-    def collision_check(self, destination):
-        dest_coord_x, dest_coord_y = destination
-        if self.map.data[dest_coord_y][dest_coord_x] == 'Z':
+    def collision_check(self, dest):
+        if self.map.map_data[dest.y][dest.x] == 'Z':
             self.fight()
-        return self.map.data[dest_coord_y][dest_coord_x] == '.'
+        return self.is_empty(dest)
 
     # function to move character
-    def update_map(self, destination, hero_coord):
-        old_coord_x, old_coord_y = hero_coord
-        self.map.data[old_coord_y][old_coord_x] = '.'
-        self.map.place_entity('@', destination)
+    # def update_map(self, destination, hero_coord):
+    #     old_coord_x, old_coord_y = hero_coord
+    #     self.map.data[old_coord_y][old_coord_x] = '.'
+    #     self.map.place_entity('@', destination)
 
 # damage formula incorporating stat bonuses
 
@@ -317,5 +341,5 @@ game = Game()
 game.play()
 # game.fight()
 
-# game.player_list[0].equip_modifier()
-print(f'strength: {game.player_list[0].strength}, attack: {game.player_list[0].attack}, health: {game.player_list[0].health}')
+# game.entities[0].equip_modifier()
+# print(f'strength: {game.entities[0].strength}, attack: {game.entities[0].attack}, health: {game.entities[0].health}')
