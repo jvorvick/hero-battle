@@ -21,7 +21,7 @@ class Sprite:
         self.graphic = graphic
 
 class Entity(Sprite):
-    def __init__(self, position, graphic, name='', character_class='', strength=18, dexterity=18, health=100, inventory=None, equip=None):
+    def __init__(self, position, graphic, character_class, name='', strength=18, dexterity=18, health=100, inventory=None, equip=None):
         super().__init__(position, graphic)
         self.name = name
         self.character_class = character_class
@@ -51,29 +51,44 @@ class Entity(Sprite):
     def dead(self):
         return self.health <= 0
 
+
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, position, graphic, name, strength=20, dexterity=18, health=100):
         super().__init__(
-            position, graphic, name, 'barbarian', strength, dexterity, health, #stats
-            [HealthPotion(), ManaPotion()], #inv
-            [AmuletOfStrength(), Battleaxe()] #equip
+            position, graphic, 'barbarian', name, strength, dexterity, health  #stats #inv #equip
         )
+        self.inventory = [HealthPotion(), ManaPotion()]
+        self.equip = [AmuletOfStrength(), Battleaxe()]
 
 class Monster(Entity): # A Monster is a kind of Entity
-    def __init__(self, position, graphic, name='', strength=15, dexterity=15, health=80):
-        super().__init__(position, graphic, name, 'zombie', strength, dexterity, health,
+    def __init__(self, position, graphic, character_class, name='', strength=15, dexterity=15, health=80):
+        super().__init__(position, graphic, character_class, name, strength, dexterity, health,
             [],
             []
         )
 
 class Zombie(Monster):
     def __init__(self, position):
-        super().__init__(position, 'Z')
+        super().__init__(position, 'Z', 'zombie')
         self.health = 40
 
-class TreasureChest(Entity):
-    pass
+# practice
+class Container:
+    pi = 3.14
+    def __init__(self, a, b, c=''):
+        self.a = a
+        self.b = b
+        self.c = c
 
+class TreasureChest(Container):
+    def __init__(self, a, b, d):
+        super().__init__(a, b)
+        self.d = d
+
+t = TreasureChest(1, 2, 3)
+print(t.pi)
+print(t.a)
+print(t.d)
 class Item:
     def __init__(self, item_type):
         self.item_type = item_type
@@ -367,8 +382,8 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-game.play()
+# game.play()
 # game.fight()
 
 # game.entities[0].equip_modifier()
-print(f'strength: {game.entities[0].strength}, attack: {game.entities[0].attack}, health: {game.entities[0].health}, dexterity: {game.entities[0].dexterity}, defense: {game.entities[0].defense}')
+print(f'strength: {game.entities[0].strength}, attack: {game.entities[0].attack}, health: {game.entities[0].health}, dexterity: {game.entities[0].dexterity}, defense: {game.entities[0].defense}, inventory: {game.entities[0].inventory}, equip: {game.entities[0].equip}')
