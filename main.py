@@ -263,7 +263,8 @@ class Game:
         print(f'strength: {entity.strength}, attack: {entity.attack}, health: {entity.health}, dexterity: {entity.dexterity}, defense: {entity.defense}, inventory: {entity.inventory}, equip: {entity.equip}')
 
     def attack(self, attacker, defender):
-        
+        attacker_title = f'{attacker.name if attacker.name else "The " + attacker.character_class}'
+        defender_title = f'{defender.name if defender.name else "the " + defender.character_class}'
         base_percent = 50
         chance = base_percent + attacker.dexterity - defender.dexterity
         roll = randint(1, 100)
@@ -271,23 +272,26 @@ class Game:
             # damage = randint(1, attacker.strength)
             damage = round(attacker.attack * (100 / (100 + defender.defense)))
             defender.health -= damage
-            print(f'The {attacker.character_class} {attacker.name} hits the {defender.character_class} {defender.name} for {damage}!')
+            print(f'{attacker_title} hits {defender_title} for {damage}!')
         else:
-            print(f'The {attacker.character_class} {attacker.name} misses the {defender.character_class} {defender.name}!')
+            print(f'{attacker_title} misses {defender_title}!')
 
     def fight(self):
         a = self.entities[0]
         b = self.entities[1]
 
         self.show_stats(a)
+        self.show_stats(b)
         self.equip_modifier(a)
+        self.equip_modifier(b)
         self.show_stats(a)
+        self.show_stats(b)
 
         while a.alive() and b.alive():
             self.attack(a, b)
             self.attack(b, a)
             print(a.name, a.health)
-            print(b.name, b.health)
+            print(b.character_class, b.health)
 
         if a.dead() and b.dead():
             print(f'It\'s a massacre! {a.name} and {b.character_class} are both dead!')
