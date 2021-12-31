@@ -32,22 +32,7 @@ class Entity(Sprite):
         self.equip = [] if equip is None else equip
         
         self.attack = strength
-<<<<<<< HEAD
         self.defense = dexterity 
-=======
-        self.defense = dexterity
-        self.equip_modifier()
-        
-    def equip_modifier(self):
-        for item in self.equip:
-            for k, v in item.modifier.items():
-                new_attribute = getattr(self, k) + v
-                setattr(self, k, new_attribute)
-                if k == 'strength':
-                    self.attack += v
-                if k == 'dexterity':
-                    self.defense += v
->>>>>>> 421ff79b936a1e636ded9ef4525fcadc0b6275fb
     
     def alive(self):
         return self.health > 0
@@ -263,7 +248,6 @@ class Game:
             self.display()
             command = self.get_command()
             self.update_state(command)
-<<<<<<< HEAD
 
     def equip_modifier(self, entity):
         for item in entity.equip:
@@ -277,8 +261,6 @@ class Game:
 
     def show_stats(self, entity):
         print(f'strength: {entity.strength}, attack: {entity.attack}, health: {entity.health}, dexterity: {entity.dexterity}, defense: {entity.defense}, inventory: {entity.inventory}, equip: {entity.equip}')
-=======
->>>>>>> 421ff79b936a1e636ded9ef4525fcadc0b6275fb
 
     def attack(self, attacker, defender):
         
@@ -361,17 +343,10 @@ class Game:
     def update_state(self, command):
         message = self.input_to_message(command)
         if message == '':
-<<<<<<< HEAD
             return
         if message == 'quit':
             self.is_playing = False
             return
-=======
-            return
-        if message == 'quit':
-            self.is_playing = False
-            return
->>>>>>> 421ff79b936a1e636ded9ef4525fcadc0b6275fb
             
         p = self.entities[0].position
         dest = Position(p.x, p.y)
@@ -415,13 +390,6 @@ class Game:
 
 game = Game()
 # game.play()
-<<<<<<< HEAD
 game.fight()
 
 # game.entities[0].equip_modifier()
-=======
-# game.fight()
-
-# game.entities[0].equip_modifier()
-print(f'strength: {game.entities[0].strength}, attack: {game.entities[0].attack}, health: {game.entities[0].health}, dexterity: {game.entities[0].dexterity}, defense: {game.entities[0].defense}, inventory: {game.entities[0].inventory}, equip: {game.entities[0].equip}')
->>>>>>> 421ff79b936a1e636ded9ef4525fcadc0b6275fb
