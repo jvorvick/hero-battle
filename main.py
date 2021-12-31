@@ -8,7 +8,7 @@ Verbs: fight, attack
 future: weapons, armor, treasure, inventory, accuracy, experience, stat increase
 '''
 
-from random import randint, choice
+from random import randint
 
 class Position:
     def __init__(self, x, y):
@@ -21,27 +21,18 @@ class Sprite:
         self.graphic = graphic
 
 class Entity(Sprite):
-    def __init__(self, position, graphic, name='', character_class='', strength=18, dexterity=18, defense=18, health=100, inventory=None, equip=None):
+    def __init__(self, position, graphic, character_class, name='', strength=18, dexterity=18, health=100, inventory=None, equip=None):
         super().__init__(position, graphic)
         self.name = name
         self.character_class = character_class
         self.strength = strength
         self.dexterity = dexterity
-        self.defense = defense
         self.health = health
         self.inventory = [] if inventory is None else inventory # ternery operator: mandatory in Python to prevent shared inventory
         self.equip = [] if equip is None else equip
         
         self.attack = strength
-        self.equip_modifier()
-        
-    def equip_modifier(self):
-        for item in self.equip:
-            for k, v in item.modifier.items():
-                new_attribute = getattr(self, k) + v
-                setattr(self, k, new_attribute)
-                if k == 'strength':
-                    self.attack += v
+        self.defense = dexterity 
     
     def alive(self):
         return self.health > 0
@@ -49,29 +40,44 @@ class Entity(Sprite):
     def dead(self):
         return self.health <= 0
 
+
 class Barbarian(Entity): # A Hero is a kind of Entity
-    def __init__(self, position, graphic, name, strength=20, dexterity=18, defense=18, health=100):
+    def __init__(self, position, graphic, name, strength=20, dexterity=18, health=100):
         super().__init__(
-            position, graphic, name, 'barbarian', strength, dexterity, defense, health, #stats
-            [HealthPotion(), ManaPotion()], #inv
-            [AmuletOfStrength(), Battleaxe()] #equip
+            position, graphic, 'barbarian', name, strength, dexterity, health  #stats #inv #equip
         )
+        self.inventory = [HealthPotion(), ManaPotion()]
+        self.equip = [AmuletOfStrength(), Battleaxe()]
 
 class Monster(Entity): # A Monster is a kind of Entity
-    def __init__(self, position, graphic, name='', strength=15, dexterity=15, defense=15, health=80):
-        super().__init__(position, graphic, name, 'zombie', strength, dexterity, defense, health,
+    def __init__(self, position, graphic, character_class, name='', strength=15, dexterity=15, health=80):
+        super().__init__(position, graphic, character_class, name, strength, dexterity, health,
             [],
             []
         )
 
 class Zombie(Monster):
     def __init__(self, position):
-        super().__init__(position, 'Z')
+        super().__init__(position, 'Z', 'zombie')
         self.health = 40
 
-class TreasureChest(Entity):
-    pass
+# practice
+class Container:
+    pi = 3.14
+    def __init__(self, a, b, c=''):
+        self.a = a
+        self.b = b
+        self.c = c
 
+class TreasureChest(Container):
+    def __init__(self, a, b, d):
+        super().__init__(a, b)
+        self.d = d
+
+t = TreasureChest(1, 2, 3)
+print(t.pi)
+print(t.a)
+print(t.d)
 class Item:
     def __init__(self, item_type):
         self.item_type = item_type
@@ -135,7 +141,8 @@ class AmuletOfStrength(Accessory):
         self.name = 'Amulet of Strength'
         self.modifier = {
             'strength': 5,
-            'health': -2
+            'health': -2,
+            'dexterity': -2
         }
 
     def __repr__(self):
@@ -233,20 +240,30 @@ class Game:
 
     def get_command(self):
         command = input('command: ')
-        if command in ['q', 'quit', 'exit', '']:
-           return 'quit'
         return command
 
     def play(self):
-        while True:
+        self.is_playing = True
+        while self.is_playing:
             self.display()
             command = self.get_command()
-            if command == 'quit':
-                break
-            self.update_state(self.input_to_message(command))
+            self.update_state(command)
 
+    def equip_modifier(self, entity):
+        for item in entity.equip:
+            for k, v in item.modifier.items():
+                new_attribute = getattr(entity, k) + v
+                setattr(entity, k, new_attribute)
+                if k == 'strength':
+                    entity.attack += v
+                if k == 'dexterity':
+                    entity.defense += v
+
+    def show_stats(self, entity):
+        print(f'strength: {entity.strength}, attack: {entity.attack}, health: {entity.health}, dexterity: {entity.dexterity}, defense: {entity.defense}, inventory: {entity.inventory}, equip: {entity.equip}')
 
     def attack(self, attacker, defender):
+        
         base_percent = 50
         chance = base_percent + attacker.dexterity - defender.dexterity
         roll = randint(1, 100)
@@ -262,6 +279,10 @@ class Game:
         a = self.entities[0]
         b = self.entities[1]
 
+        self.show_stats(a)
+        self.equip_modifier(a)
+        self.show_stats(a)
+
         while a.alive() and b.alive():
             self.attack(a, b)
             self.attack(b, a)
@@ -269,17 +290,17 @@ class Game:
             print(b.name, b.health)
 
         if a.dead() and b.dead():
-            print(f'It\'s a massacre! {a.name} and {b.name} are both dead!')
+            print(f'It\'s a massacre! {a.name} and {b.character_class} are both dead!')
         elif a.dead():
             print(f'Our hero {a.name} has been slain! Game over.')
         else:
             # if isinstance(b, Monster):
             #     self.map.place_entity('T', self.monster_coord)
             self.entities.remove(b)
-            print(f'Huzzah! {a.name} has slain {b.name}!')
+            print(f'Huzzah! {a.name} has slain {b.character_class}!')
             
         print(a.name, a.health)
-        print(b.name, b.health)
+        print(b.character_class, b.health)
         # exit()
 
 # def map():
@@ -314,12 +335,19 @@ class Game:
             message = 'left'
         elif command in ['RIGHT', 'D', 'EAST']:
             message = 'right'
+        elif command in ['Q', 'QUIT', 'EXIT']:
+            message = 'quit'
         return message
 
     # function to take a direction command to move character (arrow keys, wasd, nsew)
     def update_state(self, command):
-        if command == '':
+        message = self.input_to_message(command)
+        if message == '':
             return
+        if message == 'quit':
+            self.is_playing = False
+            return
+            
         p = self.entities[0].position
         dest = Position(p.x, p.y)
         
@@ -332,8 +360,8 @@ class Game:
             'right': [1, 0]
         }
         
-        dest.x += data[command][0]
-        dest.y += data[command][1]
+        dest.x += data[message][0]
+        dest.y += data[message][1]
 
         # destination = Position(dest.x, dest.y)
         # if self.collision_check(destination):
@@ -347,8 +375,9 @@ class Game:
 
     # function to check for walls or monsters (collision)
     def collision_check(self, dest):
-        if self.map.map_data[dest.y][dest.x] == 'Z':
-            self.fight()
+        for entity in self.entities:
+            if dest.x == entity.position.x and dest.y == entity.position.y:
+                self.fight()
         return self.is_empty(dest)
 
     # function to move character
@@ -360,8 +389,7 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-game.play()
-# game.fight()
+# game.play()
+game.fight()
 
 # game.entities[0].equip_modifier()
-# print(f'strength: {game.entities[0].strength}, attack: {game.entities[0].attack}, health: {game.entities[0].health}')
