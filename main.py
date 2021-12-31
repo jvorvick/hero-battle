@@ -15,6 +15,9 @@ class Position:
         self.x = x
         self.y = y
 
+    def __repr__(self):
+        return f'Position({self.x}, {self.y})'
+
 class Sprite:
     def __init__(self, position, graphic):
         self.position = position
@@ -40,7 +43,6 @@ class Entity(Sprite):
     def dead(self):
         return self.health <= 0
 
-
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, position, graphic, name, strength=20, dexterity=18, health=100):
         super().__init__(
@@ -48,6 +50,12 @@ class Barbarian(Entity): # A Hero is a kind of Entity
         )
         self.inventory = [HealthPotion(), ManaPotion()]
         self.equip = [AmuletOfStrength(), Battleaxe()]
+
+    def __repr__(self):
+        return f'Barbarian({self.position}, {self.graphic}, {self.name})'
+
+    def __str__(self):
+        return self.name
 
 class Monster(Entity): # A Monster is a kind of Entity
     def __init__(self, position, graphic, character_class, name='', strength=15, dexterity=15, health=80):
@@ -60,6 +68,12 @@ class Zombie(Monster):
     def __init__(self, position):
         super().__init__(position, 'Z', 'zombie')
         self.health = 40
+    
+    def __repr__(self):
+        return f'Zombie({self.position})'
+
+    def __str__(self):
+        return 'the ' + self.character_class
 
 # practice
 class Container:
@@ -78,6 +92,7 @@ t = TreasureChest(1, 2, 3)
 print(t.pi)
 print(t.a)
 print(t.d)
+
 class Item:
     def __init__(self, item_type):
         self.item_type = item_type
@@ -263,8 +278,8 @@ class Game:
         print(f'strength: {entity.strength}, attack: {entity.attack}, health: {entity.health}, dexterity: {entity.dexterity}, defense: {entity.defense}, inventory: {entity.inventory}, equip: {entity.equip}')
 
     def attack(self, attacker, defender):
-        attacker_title = f'{attacker.name if attacker.name else "The " + attacker.character_class}'
-        defender_title = f'{defender.name if defender.name else "the " + defender.character_class}'
+        # attacker_title = f'{attacker.name if attacker.name else "The " + attacker.character_class}'
+        # defender_title = f'{defender.name if defender.name else "the " + defender.character_class}'
         base_percent = 50
         chance = base_percent + attacker.dexterity - defender.dexterity
         roll = randint(1, 100)
@@ -272,14 +287,15 @@ class Game:
             # damage = randint(1, attacker.strength)
             damage = round(attacker.attack * (100 / (100 + defender.defense)))
             defender.health -= damage
-            print(f'{attacker_title} hits {defender_title} for {damage}!')
+            print(f'{attacker}'.title() + f' hits {defender} for {damage}!')
         else:
-            print(f'{attacker_title} misses {defender_title}!')
+            print(f'{attacker}'.title() + f' misses {defender}!')
 
     def fight(self):
         a = self.entities[0]
         b = self.entities[1]
-
+        print(a)
+        print(b)
         self.show_stats(a)
         self.show_stats(b)
         self.equip_modifier(a)
@@ -290,21 +306,21 @@ class Game:
         while a.alive() and b.alive():
             self.attack(a, b)
             self.attack(b, a)
-            print(a.name, a.health)
-            print(b.character_class, b.health)
+            print(a, a.health)
+            print(b, b.health)
 
         if a.dead() and b.dead():
-            print(f'It\'s a massacre! {a.name} and {b.character_class} are both dead!')
+            print(f'It\'s a massacre! {a} and {b} are both dead!')
         elif a.dead():
-            print(f'Our hero {a.name} has been slain! Game over.')
+            print(f'Our hero {a} has been slain! Game over.')
         else:
             # if isinstance(b, Monster):
             #     self.map.place_entity('T', self.monster_coord)
             self.entities.remove(b)
-            print(f'Huzzah! {a.name} has slain {b.character_class}!')
+            print(f'Huzzah! {a} has slain {b}!')
             
-        print(a.name, a.health)
-        print(b.character_class, b.health)
+        print(a, a.health)
+        print(b, b.health)
         # exit()
 
 # def map():
