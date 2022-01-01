@@ -44,7 +44,7 @@ class Entity(Sprite):
         return self.health <= 0
 
 class Barbarian(Entity): # A Hero is a kind of Entity
-    def __init__(self, position, graphic, name, strength=20, dexterity=18, health=100):
+    def __init__(self, position, name, graphic, strength=20, dexterity=18, health=100):
         super().__init__(
             position, graphic, 'barbarian', name, strength, dexterity, health  #stats #inv #equip
         )
@@ -53,6 +53,34 @@ class Barbarian(Entity): # A Hero is a kind of Entity
 
     def __repr__(self):
         return f'Barbarian({self.position}, {self.graphic}, {self.name})'
+
+    def __str__(self):
+        return self.character_class
+
+class Barbarian2(Entity): # A Hero is a kind of Entity
+    def __init__(self, position, name, graphic, strength=20, dexterity=18, health=100):
+        super().__init__(
+            position, graphic, 'barbarian', name, strength, dexterity, health  #stats #inv #equip
+        )
+        self.inventory = [HealthPotion(), ManaPotion()]
+        self.equip = [AmuletOfStrength(), Battleaxe()]
+
+class Player_Barbarian(Barbarian):
+    def __init__(self, position, name):
+        super().__init__(position, name, '@')
+
+    def __repr__(self):
+        return f'Player_Barbarian({self.position},{self.name})'
+    
+    def __str__(self):
+        return self.name
+
+class Player_Barbarian2(Barbarian2):
+    def __init__(self, position, name):
+        super().__init__(position, name, '@')
+
+    def __repr__(self):
+        return f'Player_Barbarian2({self.position}, {self.name})'
 
     def __str__(self):
         return self.name
@@ -237,9 +265,10 @@ class Dimensions:
 
 class Game:
     def __init__(self):
+        player = self.getPlayer()
         self.dimensions = Dimensions(16, 12)
         self.entities = [
-            Barbarian(Position(5, 5), '@', 'Conan'),
+            player(Position(5, 5), 'Conan'),
             Zombie(Position(7, 5))
         ]
         # self.map = Map(self.dimensions, self.entities)
@@ -247,6 +276,13 @@ class Game:
         # self.monster_coord = self.map.place_entity('Z') # place zombie
         # print(f'hero at {self.hero_coord}')
         # print(f'monster at {self.monster_coord}')
+
+    def getPlayer(self):
+        choose_class = input('Enter class: ').upper()
+        if choose_class == 'BARBARIAN':
+            return Player_Barbarian
+        elif choose_class == 'BARBARIAN2':
+            return Player_Barbarian2
     
     def display(self):
         self.map = Map(self.dimensions, self.entities)
@@ -287,15 +323,15 @@ class Game:
             # damage = randint(1, attacker.strength)
             damage = round(attacker.attack * (100 / (100 + defender.defense)))
             defender.health -= damage
-            print(f'{attacker}'.title() + f' hits {defender} for {damage}!')
+            print(f'\n {attacker}'.title() + f' hits {defender} for {damage}!')
         else:
-            print(f'{attacker}'.title() + f' misses {defender}!')
+            print(f'\n {attacker}'.title() + f' misses {defender}!')
 
     def fight(self):
         a = self.entities[0]
         b = self.entities[1]
-        print(a)
-        print(b)
+        print('\n' + repr(a))
+        print(repr(b))
         self.show_stats(a)
         self.show_stats(b)
         self.equip_modifier(a)
@@ -306,21 +342,22 @@ class Game:
         while a.alive() and b.alive():
             self.attack(a, b)
             self.attack(b, a)
-            print(a, a.health)
-            print(b, b.health)
+            print('\n' + repr(a), a.health)
+            print(repr(b), b.health)
+            
 
         if a.dead() and b.dead():
-            print(f'It\'s a massacre! {a} and {b} are both dead!')
+            print(f'\n It\'s a massacre! {a} and {b} are both dead!')
         elif a.dead():
-            print(f'Our hero {a} has been slain! Game over.')
+            print(f'\n Our hero {a} has been slain! Game over.')
         else:
             # if isinstance(b, Monster):
             #     self.map.place_entity('T', self.monster_coord)
             self.entities.remove(b)
-            print(f'Huzzah! {a} has slain {b}!')
+            print(f'\n Huzzah! {a} has slain {b}!')
             
-        print(a, a.health)
-        print(b, b.health)
+        print('\n' + repr(a), a.health)
+        print(repr(b), b.health)
         # exit()
 
 # def map():
