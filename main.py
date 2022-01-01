@@ -268,7 +268,7 @@ class Game:
         player = self.getPlayer()
         self.dimensions = Dimensions(16, 12)
         self.entities = [
-            player(Position(5, 5), 'Conan'),
+            player,
             Zombie(Position(7, 5))
         ]
         # self.map = Map(self.dimensions, self.entities)
@@ -278,11 +278,12 @@ class Game:
         # print(f'monster at {self.monster_coord}')
 
     def getPlayer(self):
+        choose_name = input('Enter name: ')
         choose_class = input('Enter class: ').upper()
         if choose_class == 'BARBARIAN':
-            return Player_Barbarian
+            return Player_Barbarian(Position(5, 5), choose_name)
         elif choose_class == 'BARBARIAN2':
-            return Player_Barbarian2
+            return Player_Barbarian2(Position(5, 5), choose_name)
     
     def display(self):
         self.map = Map(self.dimensions, self.entities)
@@ -446,7 +447,7 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-# game.play()
-game.fight()
+game.play()
+# game.fight()
 
 # game.entities[0].equip_modifier()
