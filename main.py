@@ -66,11 +66,10 @@ class Player_Barbarian(Barbarian):
         super().__init__(position, name, '@')
         self.experience = 0
         self.level = 1
-        self.next_level_exp_req = 0
 
-        @property
-        def next_level_exp_req(): 
-            return self.level * 100 * 1.25
+    @property
+    def next_level_exp_req(self): 
+        return int(self.level * 100 * 1.25)
 
     def __repr__(self):
         return f'Player_Barbarian({self.position}, {self.name})'
@@ -318,7 +317,7 @@ class Game:
                     entity.defense += v
 
     def show_player_stats(self, player):
-        print(f'\n{player} -- level: {player.level}, exp: {player.experience}, next level: {player.next_level_exp_req}, strength: {player.strength}, attack: {player.attack}, health: {player.health}, dexterity: {player.dexterity}, defense: {player.defense}, inventory: {player.inventory}, equip: {player.equip}')
+        print(f'\n{player} -- level: {player.level}, exp: {player.experience}, next level: {player.next_level_exp_req} exp, strength: {player.strength}, attack: {player.attack}, health: {player.health}, dexterity: {player.dexterity}, defense: {player.defense}, inventory: {player.inventory}, equip: {player.equip}')
     
     def show_enemy_stats(self, enemy):
         print(f'\n{enemy} -- exp given: {enemy.exp_given}, strength: {enemy.strength}, attack: {enemy.attack}, health: {enemy.health}, dexterity: {enemy.dexterity}, defense: {enemy.defense}, inventory: {enemy.inventory}, equip: {enemy.equip}')
@@ -340,17 +339,15 @@ class Game:
     @staticmethod
     def loot_entity(a, b):
         loot = []
-        message = '\nYou receive: '
         for item in b.inventory:
             loot.append(str(item))
         a.inventory.extend(b.inventory)
         loot = ', '.join(loot)
-        message += loot + '.'
+        message = '\nYou receive: ' + loot + '.'
         print(message)
 
     @staticmethod
     def is_level_up(a):
-        a.next_level_exp_req = a.level * 100 * 1.25
         if a.experience >= a.next_level_exp_req:
             return True
         return False
