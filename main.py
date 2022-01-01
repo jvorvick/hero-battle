@@ -45,9 +45,7 @@ class Entity(Sprite):
 
 class Barbarian(Entity): # A Hero is a kind of Entity
     def __init__(self, position, name, graphic, strength=20, dexterity=18, health=100):
-        super().__init__(
-            position, graphic, 'barbarian', name, strength, dexterity, health  #stats #inv #equip
-        )
+        super().__init__(position, graphic, 'barbarian', name, strength, dexterity, health)
         self.inventory = [HealthPotion(), ManaPotion()]
         self.equip = [AmuletOfStrength(), Battleaxe()]
 
@@ -59,9 +57,7 @@ class Barbarian(Entity): # A Hero is a kind of Entity
 
 class Barbarian2(Entity): # A Hero is a kind of Entity
     def __init__(self, position, name, graphic, strength=20, dexterity=18, health=100):
-        super().__init__(
-            position, graphic, 'barbarian', name, strength, dexterity, health  #stats #inv #equip
-        )
+        super().__init__(position, graphic, 'barbarian', name, strength, dexterity, health)
         self.inventory = [HealthPotion(), ManaPotion()]
         self.equip = [AmuletOfStrength(), Battleaxe()]
 
@@ -70,7 +66,7 @@ class Player_Barbarian(Barbarian):
         super().__init__(position, name, '@')
 
     def __repr__(self):
-        return f'Player_Barbarian({self.position},{self.name})'
+        return f'Player_Barbarian({self.position}, {self.name})'
     
     def __str__(self):
         return self.name
@@ -87,16 +83,15 @@ class Player_Barbarian2(Barbarian2):
 
 class Monster(Entity): # A Monster is a kind of Entity
     def __init__(self, position, graphic, character_class, name='', strength=15, dexterity=15, health=80):
-        super().__init__(position, graphic, character_class, name, strength, dexterity, health,
-            [],
-            []
-        )
-
+        super().__init__(position, graphic, character_class, name, strength, dexterity, health)
+        
 class Zombie(Monster):
     def __init__(self, position):
         super().__init__(position, 'Z', 'zombie')
         self.health = 40
-    
+        self.inventory = [HealthPotion(), ManaPotion()]
+        self.equip = []
+
     def __repr__(self):
         return f'Zombie({self.position})'
 
@@ -154,7 +149,7 @@ class HealthPotion(Potion):
         return 'HealthPotion()'
 
     def __str__(self):
-        return f'{self.color} {self.item_type}, {self.attribute}'
+        return f'{self.color} {self.item_type}'
 
 class ManaPotion(Potion):
     def __init__(self):
@@ -166,7 +161,7 @@ class ManaPotion(Potion):
         return 'ManaPotion()'
 
     def __str__(self):
-        return f'{self.color} {self.item_type}, {self.attribute}'
+        return f'{self.color} {self.item_type}'
 
 class Accessory(Item):
     def __init__(self):
@@ -265,7 +260,7 @@ class Dimensions:
 
 class Game:
     def __init__(self):
-        player = self.getPlayer()
+        player = self.get_player()
         self.dimensions = Dimensions(16, 12)
         self.entities = [
             player,
@@ -277,9 +272,11 @@ class Game:
         # print(f'hero at {self.hero_coord}')
         # print(f'monster at {self.monster_coord}')
 
-    def getPlayer(self):
-        choose_name = input('Enter name: ')
-        choose_class = input('Enter class: ').upper()
+    def get_player(self):
+        # choose_name = input('Enter name: ')
+        choose_name = 'Test'
+        # choose_class = input('Enter class: ').upper()
+        choose_class = 'BARBARIAN'
         if choose_class == 'BARBARIAN':
             return Player_Barbarian(Position(5, 5), choose_name)
         elif choose_class == 'BARBARIAN2':
@@ -312,7 +309,7 @@ class Game:
                     entity.defense += v
 
     def show_stats(self, entity):
-        print(f'strength: {entity.strength}, attack: {entity.attack}, health: {entity.health}, dexterity: {entity.dexterity}, defense: {entity.defense}, inventory: {entity.inventory}, equip: {entity.equip}')
+        print(f'\nstrength: {entity.strength}, attack: {entity.attack}, health: {entity.health}, dexterity: {entity.dexterity}, defense: {entity.defense}, inventory: {entity.inventory}, equip: {entity.equip}')
 
     def attack(self, attacker, defender):
         # attacker_title = f'{attacker.name if attacker.name else "The " + attacker.character_class}'
@@ -324,9 +321,20 @@ class Game:
             # damage = randint(1, attacker.strength)
             damage = round(attacker.attack * (100 / (100 + defender.defense)))
             defender.health -= damage
-            print(f'\n {attacker}'.title() + f' hits {defender} for {damage}!')
+            print(f'\n{attacker}'.title() + f' hits {defender} for {damage}!')
         else:
-            print(f'\n {attacker}'.title() + f' misses {defender}!')
+            print(f'\n{attacker}'.title() + f' misses {defender}!')
+
+    @staticmethod
+    def loot_entity(a, b):
+        loot = []
+        message = '\nYou receive: '
+        for item in b.inventory:
+            loot.append(str(item))
+        a.inventory.extend(b.inventory)
+        loot = ', '.join(loot)
+        message += loot + '.'
+        print(message)
 
     def fight(self):
         a = self.entities[0]
@@ -346,16 +354,16 @@ class Game:
             print('\n' + repr(a), a.health)
             print(repr(b), b.health)
             
-
         if a.dead() and b.dead():
-            print(f'\n It\'s a massacre! {a} and {b} are both dead!')
+            print(f'\nIt\'s a massacre! {a} and {b} are both dead!')
         elif a.dead():
-            print(f'\n Our hero {a} has been slain! Game over.')
+            print(f'\nOur hero {a} has been slain! Game over.')
         else:
-            # if isinstance(b, Monster):
-            #     self.map.place_entity('T', self.monster_coord)
+            self.loot_entity(a, b)
+            self.show_stats(a)
+            self.show_stats(b)
             self.entities.remove(b)
-            print(f'\n Huzzah! {a} has slain {b}!')
+            print(f'\nHuzzah! {a} has slain {b}!')
             
         print('\n' + repr(a), a.health)
         print(repr(b), b.health)
@@ -447,7 +455,7 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-game.play()
-# game.fight()
+# game.play()
+game.fight()
 
 # game.entities[0].equip_modifier()
