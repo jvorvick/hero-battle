@@ -64,6 +64,13 @@ class Barbarian2(Entity): # A Hero is a kind of Entity
 class Player_Barbarian(Barbarian):
     def __init__(self, position, name):
         super().__init__(position, name, '@')
+        self.experience = 0
+        self.level = 1
+        self.next_level_exp_req = 0
+
+        @property
+        def next_level_exp_req(): 
+            return self.level * 100 * 1.25
 
     def __repr__(self):
         return f'Player_Barbarian({self.position}, {self.name})'
@@ -82,12 +89,13 @@ class Player_Barbarian2(Barbarian2):
         return self.name
 
 class Monster(Entity): # A Monster is a kind of Entity
-    def __init__(self, position, graphic, character_class, name='', strength=15, dexterity=15, health=80):
+    def __init__(self, position, graphic, character_class, exp_given, name='', strength=15, dexterity=15, health=80):
         super().__init__(position, graphic, character_class, name, strength, dexterity, health)
+        self.exp_given = exp_given
         
 class Zombie(Monster):
     def __init__(self, position):
-        super().__init__(position, 'Z', 'zombie')
+        super().__init__(position, 'Z', 'zombie', 75)
         self.health = 40
         self.inventory = [HealthPotion(), ManaPotion()]
         self.equip = []
@@ -264,7 +272,8 @@ class Game:
         self.dimensions = Dimensions(16, 12)
         self.entities = [
             player,
-            Zombie(Position(7, 5))
+            Zombie(Position(7, 5)),
+            Zombie(Position(7, 6))
         ]
         # self.map = Map(self.dimensions, self.entities)
         # self.hero_coord = self.map.place_entity('@', (5, 5)) # place hero
@@ -308,8 +317,11 @@ class Game:
                 if k == 'dexterity':
                     entity.defense += v
 
-    def show_stats(self, entity):
-        print(f'\nstrength: {entity.strength}, attack: {entity.attack}, health: {entity.health}, dexterity: {entity.dexterity}, defense: {entity.defense}, inventory: {entity.inventory}, equip: {entity.equip}')
+    def show_player_stats(self, player):
+        print(f'\n{player} -- level: {player.level}, exp: {player.experience}, next level: {player.next_level_exp_req}, strength: {player.strength}, attack: {player.attack}, health: {player.health}, dexterity: {player.dexterity}, defense: {player.defense}, inventory: {player.inventory}, equip: {player.equip}')
+    
+    def show_enemy_stats(self, enemy):
+        print(f'\n{enemy} -- exp given: {enemy.exp_given}, strength: {enemy.strength}, attack: {enemy.attack}, health: {enemy.health}, dexterity: {enemy.dexterity}, defense: {enemy.defense}, inventory: {enemy.inventory}, equip: {enemy.equip}')
 
     def attack(self, attacker, defender):
         # attacker_title = f'{attacker.name if attacker.name else "The " + attacker.character_class}'
@@ -336,17 +348,31 @@ class Game:
         message += loot + '.'
         print(message)
 
+    @staticmethod
+    def is_level_up(a):
+        a.next_level_exp_req = a.level * 100 * 1.25
+        if a.experience >= a.next_level_exp_req:
+            return True
+        return False
+
+    def gain_experience(self, a, b):
+        a.experience += b.exp_given
+        print(f'{a} gains {b.exp_given} exp.')
+        if self.is_level_up(a):
+            a.level += 1
+            print(f'{a} is now level {a.level}!')
+
     def fight(self):
         a = self.entities[0]
         b = self.entities[1]
         print('\n' + repr(a))
         print(repr(b))
-        self.show_stats(a)
-        self.show_stats(b)
+        self.show_player_stats(a)
+        self.show_enemy_stats(b)
         self.equip_modifier(a)
         self.equip_modifier(b)
-        self.show_stats(a)
-        self.show_stats(b)
+        self.show_player_stats(a)
+        self.show_enemy_stats(b)
 
         while a.alive() and b.alive():
             self.attack(a, b)
@@ -359,11 +385,12 @@ class Game:
         elif a.dead():
             print(f'\nOur hero {a} has been slain! Game over.')
         else:
-            self.loot_entity(a, b)
-            self.show_stats(a)
-            self.show_stats(b)
-            self.entities.remove(b)
             print(f'\nHuzzah! {a} has slain {b}!')
+            self.loot_entity(a, b)
+            self.gain_experience(a, b)
+            self.show_player_stats(a)
+            self.show_enemy_stats(b)
+            self.entities.remove(b)
             
         print('\n' + repr(a), a.health)
         print(repr(b), b.health)
@@ -455,7 +482,7 @@ class Game:
 # damage formula incorporating stat bonuses
 
 game = Game()
-# game.play()
-game.fight()
+game.play()
+# game.fight()
 
 # game.entities[0].equip_modifier()
