@@ -80,6 +80,12 @@ class Player_Barbarian(Barbarian):
 class Player_Barbarian2(Barbarian2):
     def __init__(self, position, name):
         super().__init__(position, name, '@')
+        self.experience = 0
+        self.level = 1
+
+    @property
+    def next_level_exp_req(self): 
+        return int(self.level * 100 * 1.25)
 
     def __repr__(self):
         return f'Player_Barbarian2({self.position}, {self.name})'
@@ -354,10 +360,10 @@ class Game:
 
     def gain_experience(self, a, b):
         a.experience += b.exp_given
-        print(f'{a} gains {b.exp_given} exp.')
+        print(f'\n{a} gains {b.exp_given} exp.')
         if self.is_level_up(a):
             a.level += 1
-            print(f'{a} is now level {a.level}!')
+            print(f'\n{a} is now level {a.level}!')
 
     def fight(self):
         a = self.entities[0]
