@@ -9,7 +9,14 @@ future: weapons, armor, treasure, inventory, accuracy, experience, stat increase
 '''
 from Game import Game
 
-game = Game()
+class Interface:
+    def get_input():
+        return input()
+
+    def display_output(text):
+        print(text)
+
+game = Game(Interface)
 game.play()
 # game.fight()
 

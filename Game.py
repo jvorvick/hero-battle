@@ -6,7 +6,10 @@ from Dimension import Dimensions
 from random import randint
 
 class Game:
-    def __init__(self):
+    def __init__(self, interface):
+        self.interface = interface
+        self.buffer = ''
+
         player = self.get_player()
         
         self.dimensions = Dimensions(16, 12)
@@ -18,14 +21,17 @@ class Game:
         # self.map = Map(self.dimensions, self.entities)
         # self.hero_coord = self.map.place_entity('@', (5, 5)) # place hero
         # self.monster_coord = self.map.place_entity('Z') # place zombie
-        # print(f'hero at {self.hero_coord}')
-        # print(f'monster at {self.monster_coord}')
+        # self.output(f'hero at {self.hero_coord}')
+        # self.output(f'monster at {self.monster_coord}')
+
+    def output(self, text):
+        self.buffer += str(text) + '\n'
 
     def get_player(self):
-        choose_name = input('Enter name: ')
-        # choose_name = 'Test'
-        choose_class = input('Enter class: ').lower()
-        # choose_class = 'BARBARIAN'
+        # choose_name = input('Enter name: ')
+        choose_name = 'Test'
+        # choose_class = input('Enter class: ').lower()
+        choose_class = 'BARBARIAN'
         # if choose_class == 'BARBARIAN':
         #     return Player_Barbarian(Position(5, 5), choose_name)
         # elif choose_class == 'BARBARIAN2':
@@ -34,12 +40,13 @@ class Game:
 
     def display(self):
         self.map = Map(self.dimensions, self.entities)
-        print('STATUS:')
-        print(self.map)
+        self.output('STATUS:')
+        self.output(self.map)
+        self.interface.display_output(self.buffer)
 
     def get_command(self):
-        command = input('command: ')
-        return command
+        command = self.interface.get_input()
+        return command.strip()
 
     def play(self):
         self.is_playing = True
@@ -49,10 +56,10 @@ class Game:
             self.update_state(command)
 
     def show_player_stats(self, player):
-        print(f'\n{player} -- level: {player.level}, exp: {player.experience}, next level: {player.next_level_exp_req} exp, strength: {player.strength}, attack: {player.attack}, health: {player.health}, dexterity: {player.dexterity}, defense: {player.defense}, inventory: {player.inventory}, equip: {player.equip}')
+        self.output(f'\n{player} -- level: {player.level}, exp: {player.experience}, next level: {player.next_level_exp_req} exp, strength: {player.strength}, attack: {player.attack}, health: {player.health}, dexterity: {player.dexterity}, defense: {player.defense}, inventory: {player.inventory}, equip: {player.equip}')
     
     def show_enemy_stats(self, enemy):
-        print(f'\n{enemy} -- exp given: {enemy.exp_given}, strength: {enemy.strength}, attack: {enemy.attack}, health: {enemy.health}, dexterity: {enemy.dexterity}, defense: {enemy.defense}, inventory: {enemy.inventory}, equip: {enemy.equip}')
+        self.output(f'\n{enemy} -- exp given: {enemy.exp_given}, strength: {enemy.strength}, attack: {enemy.attack}, health: {enemy.health}, dexterity: {enemy.dexterity}, defense: {enemy.defense}, inventory: {enemy.inventory}, equip: {enemy.equip}')
 
     def attack(self, attacker, defender):
         # attacker_title = f'{attacker.name if attacker.name else "The " + attacker.character_class}'
@@ -64,27 +71,26 @@ class Game:
             # damage = randint(1, attacker.strength)
             damage = round(attacker.attack * (100 / (100 + defender.defense)))
             defender.health -= damage
-            print(f'\n{attacker}'.title() + f' hits {defender} for {damage}!')
+            self.output(f'\n{attacker}'.title() + f' hits {defender} for {damage}!')
         else:
-            print(f'\n{attacker}'.title() + f' misses {defender}!')
+            self.output(f'\n{attacker}'.title() + f' misses {defender}!')
 
-    @staticmethod
-    def loot_entity(a, b):
+    def loot_entity(self, a, b):
         loot = []
         for item in b.inventory:
             loot.append(str(item))
         a.inventory.extend(b.inventory)
         loot = ', '.join(loot)
         message = '\nYou receive: ' + loot + '.'
-        print(message)
+        self.output(message)
 
     
 
     def fight(self):
         a = self.entities[0]
         b = self.entities[1]
-        print('\n' + repr(a))
-        print(repr(b))
+        self.output('\n' + repr(a))
+        self.output(repr(b))
         self.show_player_stats(a)
         self.show_enemy_stats(b)
         a.equip_modifier()
@@ -95,23 +101,23 @@ class Game:
         while a.alive() and b.alive():
             self.attack(a, b)
             self.attack(b, a)
-            print('\n' + repr(a), a.health)
-            print(repr(b), b.health)
+            self.output(f'\n{repr(a)} {a.health}')
+            self.output(f'{repr(b)} {b.health}')
             
         if a.dead() and b.dead():
-            print(f'\nIt\'s a massacre! {a} and {b} are both dead!')
+            self.output(f'\nIt\'s a massacre! {a} and {b} are both dead!')
         elif a.dead():
-            print(f'\nOur hero {a} has been slain! Game over.')
+            self.output(f'\nOur hero {a} has been slain! Game over.')
         else:
-            print(f'\nHuzzah! {a} has slain {b}!')
+            self.output(f'\nHuzzah! {a} has slain {b}!')
             self.loot_entity(a, b)
             a.gain_experience(b)
             self.show_player_stats(a)
             self.show_enemy_stats(b)
             self.entities.remove(b)
             
-        print('\n' + repr(a), a.health)
-        print(repr(b), b.health)
+        self.output(f'\n{repr(a)} {a.health}')
+        self.output(f'{repr(b)} {b.health}')
         # exit()
 
 # def map():
@@ -120,20 +126,20 @@ class Game:
 #         ['x', 'x', 'x'],
 #         ['x', 'x', 'x']
 #     ]
-#     print(layout)
+#     self.output(layout)
 #     for r in layout:
-#         print(' '.join(r))
+#         self.output(' '.join(r))
 
 # def map2():
 #     x = 5
 #     y = 6
 #     layout = []
-#     print(layout)
+#     self.output(layout)
 #     for i in range(x):
 #         layout.append(['x'] * y)
 #     for r in layout:
-#         print(' '.join(r))
-#     print(layout)
+#         self.output(' '.join(r))
+#     self.output(layout)
 
     def input_to_message(self, command):
         message = ''
