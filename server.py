@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request
 import json
 
 app = Flask(__name__)
@@ -7,6 +7,7 @@ counter = 0
 def increment(amount):
     global counter
     counter += amount
+    return counter
 
 def get_state():
     global counter
@@ -14,8 +15,9 @@ def get_state():
 
 @app.route("/")
 def index():
+    global counter
     return '''
-        <div id="score">0</div>
+        <div id="score">%d</div>
         <script>
             function updateScore(n) {
                 document.getElementById("score").innerHTML = n * 1000
@@ -26,9 +28,22 @@ def index():
                 .then(response => response.json())
                 .then(data => updateScore(data.counter));
             }
+
+            function increment2(amount) {
+                fetch('/api/bump', {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'    
+                    },
+                    method: 'POST',
+                    body: 'amount=' + amount
+                })
+                .then(data => updateScore(parseInt(data)));
+            }
         </script>
+
         <button onclick="increment(5)">Click me!</button>
-    '''
+        <button onclick="increment2(5)">Click me!2</button>
+    ''' % counter
 
 @app.route("/hello")
 def hello_world():
@@ -61,3 +76,8 @@ def api():
 def api_increment(amount):
     increment(int(amount))
     return Response(json.dumps(get_state()), mimetype='text/json')
+
+@app.route("/api/bump", methods=["POST", "GET"])
+def api_bump():
+    c = increment(int(request.form.get("amount")))
+    return str(c)
