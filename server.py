@@ -37,7 +37,8 @@ def index():
                     method: 'POST',
                     body: 'amount=' + amount
                 })
-                .then(data => updateScore(parseInt(data)));
+                .then(data => data.text())
+                .then(text => updateScore(parseInt(text)));
             }
         </script>
 
