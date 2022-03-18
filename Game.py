@@ -1,9 +1,11 @@
+from html import entities
 from Sprite import Entity, Zombie
 from Position import Position
 from Map import Map
 from Dimension import Dimensions
 
 from random import randint
+import json
 
 class Game:
     def __init__(self):
@@ -42,12 +44,17 @@ class Game:
         self.interface.display_output(self.status())
 
     def status(self):
-        self.map = Map(self.dimensions, self.entities)
-        # self.output(self.map)
-        self.buffer = str(self.map) + '---' + self.buffer
-        text = self.buffer
-        self.buffer = ''
-        return text
+        response = {
+            'height': self.dimensions.height,
+            'width': self.dimensions.width,
+            'entities': list(map(lambda e : {'symbol': e.graphic, 'x': e.position.x, 'y': e.position.y}, self.entities)),
+            'messages': self.buffer
+        }
+        # self.map = Map(self.dimensions, self.entities)
+        # self.buffer = str(self.map) + '---' + self.buffer
+        # text = self.buffer
+        # self.buffer = ''
+        return json.dumps(response) # converts python objects into json string
 
     def command(self, text):
         self.map = Map(self.dimensions, self.entities)
