@@ -1,0 +1,29 @@
+<body>
+  <pre id="map">%d</pre>
+  <button onclick="sendCommand('w')">Up</button>
+  <button onclick="sendCommand('s')">Down</button>
+  <button onclick="sendCommand('a')">Left</button>
+  <button onclick="sendCommand('d')">Right</button>
+  <pre id="text">%d</pre>
+  <script>
+    function updateDisplay(text) {
+      parts = text.split('---')
+      document.getElementById("map").innerHTML = parts[0]
+      document.getElementById("text").innerHTML = parts[1]
+    }
+
+    function sendCommand(command) {
+      fetch('http://localhost:5000/api/command', {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        method: 'POST',
+        body: 'command=' + command
+      })
+        .then(
+          data => data.text()
+        )
+        .then(text => updateDisplay(text));
+    }
+  </script>
+</body>

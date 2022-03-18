@@ -1,8 +1,12 @@
 from flask import Flask, Response, request
 import json
+from Game import Game
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+CORS(app)
 
+game = Game()
 counter = 0
 def increment(amount):
     global counter
@@ -37,7 +41,9 @@ def index():
                     method: 'POST',
                     body: 'amount=' + amount
                 })
-                .then(data => data.text())
+                .then(
+                    data => data.text()
+                )
                 .then(text => updateScore(parseInt(text)));
             }
         </script>
@@ -82,3 +88,9 @@ def api_increment(amount):
 def api_bump():
     c = increment(int(request.form.get("amount")))
     return str(c)
+
+@app.route("/api/command", methods=["POST", "GET"])
+@cross_origin()
+def api_command():
+    text = game.command(request.form.get("command"))
+    return text

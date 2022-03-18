@@ -16,8 +16,8 @@ class Interface:
     def display_output(text):
         print(text)
 
-game = Game(Interface)
-game.play()
+game = Game()
+game.play(Interface)
 # game.fight()
 
 # game.entities[0].equip_modifier()

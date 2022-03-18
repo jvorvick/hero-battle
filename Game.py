@@ -6,8 +6,8 @@ from Dimension import Dimensions
 from random import randint
 
 class Game:
-    def __init__(self, interface):
-        self.interface = interface
+    def __init__(self):
+        
         self.buffer = ''
 
         player = self.get_player()
@@ -39,16 +39,27 @@ class Game:
         return Entity(Position(5,5), '@', choose_class, choose_name)
 
     def display(self):
+        self.interface.display_output(self.status())
+
+    def status(self):
         self.map = Map(self.dimensions, self.entities)
-        self.output('STATUS:')
-        self.output(self.map)
-        self.interface.display_output(self.buffer)
+        # self.output(self.map)
+        self.buffer = str(self.map) + '---' + self.buffer
+        text = self.buffer
+        self.buffer = ''
+        return text
+
+    def command(self, text):
+        self.map = Map(self.dimensions, self.entities)
+        self.update_state(text)
+        return self.status()
 
     def get_command(self):
         command = self.interface.get_input()
         return command.strip()
 
-    def play(self):
+    def play(self, interface):
+        self.interface = interface
         self.is_playing = True
         while self.is_playing:
             self.display()
