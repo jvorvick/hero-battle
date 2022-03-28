@@ -22,12 +22,17 @@
 
     .entity {
       position: absolute;
+      max-height: 55px;
     }
 
     #map {
-      width: 1760px;
-      height: 1320px;
+      width: 880px;
+      height: 660px;
       background: #7B7B7B;
+      margin: 1rem auto;
+      position: relative;
+      background-image: url(images/floor.png);
+      background-size: 55px;
     }
 
   </style>
@@ -50,7 +55,14 @@
 
   <pre id="text">%d</pre>
   <script>
-    const tileSize = 110
+    
+    const tileSize = 55
+
+    const spriteDict = {
+      '@': 'images/hero2.png',
+      'Z': 'images/zombie.webp'
+    }
+
     function updateDisplay(data) {
       window.map.innerHTML = ''
       document.getElementById('text').innerHTML = data.messages
@@ -59,7 +71,7 @@
         console.log(data.entities[i]) 
         let div = document.createElement('img')
         div.setAttribute('class', 'entity')
-        div.setAttribute('src', 'images/hero.png')
+        div.setAttribute('src', spriteDict[data.entities[i].graphic])
         // div.innerHTML = data.entities[i].symbol
         div.style.left = (data.entities[i].x * tileSize) + 'px'
         div.style.top = (data.entities[i].y * tileSize) + 'px'

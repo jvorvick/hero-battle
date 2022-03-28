@@ -47,7 +47,7 @@ class Game:
         response = {
             'height': self.dimensions.height,
             'width': self.dimensions.width,
-            'entities': list(map(lambda e : {'symbol': e.graphic, 'x': e.position.x, 'y': e.position.y}, self.entities)),
+            'entities': list(map(lambda e : {'graphic': e.graphic, 'x': e.position.x, 'y': e.position.y}, self.entities)),
             'messages': self.buffer
         }
         # self.map = Map(self.dimensions, self.entities)
