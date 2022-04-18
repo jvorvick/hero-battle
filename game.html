@@ -65,7 +65,9 @@
 
     function updateDisplay(data) {
       window.map.innerHTML = ''
-      document.getElementById('text').innerHTML = data.messages
+      const temp = data.entities[0].inv.map(i => `<button>${i}</button>`)//.join("&nbsp;")
+      console.log(temp)
+      document.getElementById('text').innerHTML = temp
       for (let i = 0; i < data.entities.length; i++) {
         // document.getElementById("map").innerHTML = data.entities[0].symbol
         console.log(data.entities[i]) 

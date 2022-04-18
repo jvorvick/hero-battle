@@ -43,11 +43,14 @@ class Game:
     def display(self):
         self.interface.display_output(self.status())
 
+    def simpleInv(self, entity):
+        return list(map(lambda item : str(item), entity.inventory))
+
     def status(self):
         response = {
             'height': self.dimensions.height,
             'width': self.dimensions.width,
-            'entities': list(map(lambda e : {'graphic': e.graphic, 'x': e.position.x, 'y': e.position.y}, self.entities)),
+            'entities': list(map(lambda e : {'graphic': e.graphic, 'x': e.position.x, 'y': e.position.y, 'inv': self.simpleInv(e)}, self.entities)),
             'messages': self.buffer
         }
         # self.map = Map(self.dimensions, self.entities)
@@ -213,6 +216,7 @@ class Game:
         for entity in self.entities:
             if dest.x == entity.position.x and dest.y == entity.position.y:
                 self.fight()
+                return False
         return self.is_empty(dest)
 
     # function to move character
