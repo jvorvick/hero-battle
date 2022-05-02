@@ -43,13 +43,13 @@
   <table>
     <tr>
       <td></td>
-      <td><button onclick="sendCommand('w')">Up</button></td>
+      <td><button onfocus="this.blur()" onclick="sendCommand('w')">Up</button></td>
       <td></td>
     </tr>
     <tr>
-      <td><button onclick="sendCommand('a')">Left</button></td>
-      <td><button onclick="sendCommand('s')">Down</button></td>
-      <td><button onclick="sendCommand('d')">Right</button></td>
+      <td><button onfocus="this.blur()" onclick="sendCommand('a')">Left</button></td>
+      <td><button onfocus="this.blur()" onclick="sendCommand('s')">Down</button></td>
+      <td><button onfocus="this.blur()" onclick="sendCommand('d')">Right</button></td>
     </tr>
   </table>
 
@@ -94,6 +94,22 @@
         )
         .then(data => updateDisplay(data));
     }
+
+    function onKeydown(e) {
+      console.log('key pressed: ', e.keyCode);
+      if (e.keyCode === 119 || e.keyCode === 87 || e.keyCode === 38) {
+        sendCommand('w');
+      } else if (e.keyCode === 115 || e.keyCode === 83 || e.keyCode === 40) {
+        sendCommand('s');
+      } else if (e.keyCode === 97 || e.keyCode === 65 || e.keyCode === 37) {
+        sendCommand('a');
+      } else if (e.keyCode === 100 || e.keyCode === 68 || e.keyCode === 39) {
+        sendCommand('d');
+      }
+      
+    }
+
+    document.addEventListener('keydown', onKeydown)
 
     sendCommand('');
   </script>

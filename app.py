@@ -86,8 +86,8 @@ def api_increment(amount):
 
 @app.route("/api/bump", methods=["POST", "GET"])
 def api_bump():
-    c = increment(int(request.form.get("amount")))
-    return str(c)
+    counter = increment(int(request.form.get("amount")))
+    return str(counter)
 
 @app.route("/api/command", methods=["POST", "GET"])
 @cross_origin()
